@@ -33,18 +33,20 @@ export default function AdminLogin() {
         <div className="min-h-screen relative overflow-hidden flex items-center justify-center">
             {/* Imagen de Fondo con Overlay */}
             <div className="absolute inset-0 z-0">
-                <div
-                    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                    style={{
-                        backgroundImage: 'url(https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=1920&h=1080&fit=crop&q=80)',
-                    }}
-                />
-                {/* Overlay oscuro con gradiente */}
-                <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/60 to-orange-900/70"></div>
+                <div className="absolute inset-0 bg-camo-300">
+                    {/* Camo Pattern Simulation */}
+                    <div className="absolute inset-0 opacity-10" style={{
+                        backgroundImage: 'radial-gradient(#1A1A1A 2px, transparent 2px), radial-gradient(#1A1A1A 2px, transparent 2px)',
+                        backgroundSize: '30px 30px',
+                        backgroundPosition: '0 0, 15px 15px'
+                    }}></div>
+                </div>
+                {/* Overlay Neon */}
+                <div className="absolute inset-0 bg-gradient-to-br from-brand-black/80 via-transparent to-brand-black/90"></div>
 
-                {/* Elementos decorativos animados */}
-                <div className="absolute top-20 left-20 w-72 h-72 bg-orange-500/20 rounded-full blur-3xl animate-pulse"></div>
-                <div className="absolute bottom-20 right-20 w-96 h-96 bg-orange-600/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+                {/* Elementos decorativos */}
+                <div className="absolute top-20 left-20 w-72 h-72 bg-neon-500/10 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute bottom-20 right-20 w-96 h-96 bg-neon-400/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
             </div>
 
             {/* Contenido */}
@@ -53,15 +55,15 @@ export default function AdminLogin() {
                 <div className="hidden lg:block text-white space-y-8 animate-fade-in">
                     <div className="space-y-4">
                         <div className="flex items-center gap-3 mb-6">
-                            <Sparkles className="text-orange-400" size={32} />
-                            <h1 className="text-5xl font-bold">
-                                <span className="text-white">Zapatería</span>
-                                <span className="text-orange-400"> Moderna</span>
+                            <Sparkles className="text-neon-500" size={32} />
+                            <h1 className="text-5xl font-black">
+                                <span className="text-white">Importadora</span>
+                                <span className="text-neon-500"> Fernández</span>
                             </h1>
                         </div>
                         <h2 className="text-4xl font-bold leading-tight">
                             Bienvenido al
-                            <span className="block text-orange-400">Panel de Administración</span>
+                            <span className="block text-neon-500">Panel de Administración</span>
                         </h2>
                         <p className="text-xl text-gray-300 leading-relaxed">
                             Gestiona tu inventario, productos y ventas desde un solo lugar.
@@ -70,9 +72,9 @@ export default function AdminLogin() {
 
                     {/* Features */}
                     <div className="space-y-4 pt-8">
-                        <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                            <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="flex items-center gap-4 bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-neon-500/30">
+                            <div className="w-12 h-12 bg-neon-500/20 border border-neon-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <svg className="w-6 h-6 text-neon-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
@@ -82,9 +84,9 @@ export default function AdminLogin() {
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                            <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="flex items-center gap-4 bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-neon-500/30">
+                            <div className="w-12 h-12 bg-neon-500/20 border border-neon-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <svg className="w-6 h-6 text-neon-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>
                             </div>
@@ -94,9 +96,9 @@ export default function AdminLogin() {
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                            <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="flex items-center gap-4 bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-neon-500/30">
+                            <div className="w-12 h-12 bg-neon-500/20 border border-neon-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <svg className="w-6 h-6 text-neon-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                 </svg>
                             </div>
@@ -112,12 +114,13 @@ export default function AdminLogin() {
                 <div className="w-full max-w-md mx-auto animate-slide-up">
                     <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-10 border border-white/20">
                         {/* Header del Formulario */}
+                        {/* Header del Formulario */}
                         <div className="text-center mb-8">
-                            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl mb-4 shadow-lg">
-                                <Lock className="text-white" size={28} />
+                            <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-black border-2 border-neon-500 rounded-2xl mb-4 shadow-lg shadow-neon-500/20">
+                                <Lock className="text-neon-500" size={28} />
                             </div>
-                            <h2 className="text-3xl font-bold text-slate-800 mb-2">Iniciar Sesión</h2>
-                            <p className="text-slate-600">Accede a tu panel de administración</p>
+                            <h2 className="text-3xl font-black text-brand-black mb-2">Inicia Sesión</h2>
+                            <p className="text-slate-500">Acceso exclusivo administrativo</p>
                         </div>
 
                         {/* Formulario */}
@@ -136,7 +139,7 @@ export default function AdminLogin() {
                                         required
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full pl-12 pr-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all text-slate-900 placeholder-slate-400"
+                                        className="w-full pl-12 pr-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-neon-500 focus:ring-4 focus:ring-neon-500/10 transition-all text-brand-black placeholder-slate-400 font-bold"
                                         placeholder="tu@email.com"
                                     />
                                 </div>
@@ -156,7 +159,7 @@ export default function AdminLogin() {
                                         required
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full pl-12 pr-12 py-3.5 border-2 border-slate-200 rounded-xl focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all text-slate-900 placeholder-slate-400"
+                                        className="w-full pl-12 pr-12 py-3.5 border-2 border-slate-200 rounded-xl focus:border-neon-500 focus:ring-4 focus:ring-neon-500/10 transition-all text-brand-black placeholder-slate-400 font-bold"
                                         placeholder="••••••••"
                                     />
                                     <button
@@ -172,10 +175,10 @@ export default function AdminLogin() {
                             {/* Recordar / Olvidé contraseña */}
                             <div className="flex items-center justify-between text-sm">
                                 <label className="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-orange-500 focus:ring-orange-500" />
+                                    <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-neon-500 focus:ring-neon-500" />
                                     <span className="text-slate-600">Recordarme</span>
                                 </label>
-                                <a href="#" className="text-orange-600 hover:text-orange-700 font-medium">
+                                <a href="#" className="text-neon-600 hover:text-brand-black font-bold">
                                     ¿Olvidaste tu contraseña?
                                 </a>
                             </div>
@@ -184,7 +187,7 @@ export default function AdminLogin() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-bold text-lg hover:from-orange-600 hover:to-orange-700 focus:ring-4 focus:ring-orange-500/50 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group"
+                                className="w-full bg-brand-black text-neon-500 py-4 rounded-xl font-black text-lg hover:bg-neon-500 hover:text-brand-black focus:ring-4 focus:ring-neon-500/50 transition-all shadow-lg hover:shadow-neon-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group uppercase tracking-widest border border-neon-500/20"
                             >
                                 {loading ? (
                                     <>
@@ -202,7 +205,7 @@ export default function AdminLogin() {
 
                         {/* Volver a la tienda */}
                         <div className="mt-8 pt-6 border-t border-slate-200 text-center">
-                            <Link href="/" className="text-slate-600 hover:text-orange-600 font-medium inline-flex items-center gap-2 transition-colors">
+                            <Link href="/" className="text-slate-500 hover:text-neon-600 font-bold inline-flex items-center gap-2 transition-colors uppercase text-sm">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                 </svg>
@@ -213,9 +216,9 @@ export default function AdminLogin() {
 
                     {/* Logo móvil */}
                     <div className="lg:hidden text-center mt-8">
-                        <h1 className="text-3xl font-bold text-white">
-                            <span>Zapatería</span>
-                            <span className="text-orange-400"> Moderna</span>
+                        <h1 className="text-3xl font-black text-white">
+                            <span>Importadora</span>
+                            <span className="text-neon-500"> Fernández</span>
                         </h1>
                     </div>
                 </div>

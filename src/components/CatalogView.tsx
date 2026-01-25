@@ -16,7 +16,8 @@ const CATEGORIAS = [
     { label: 'Deportivos', value: 'deportivo' },
     { label: 'Botas', value: 'botas' },
     { label: 'Sandalias', value: 'sandalias' },
-    { label: 'Formales', value: 'formales' }
+    { label: 'Formales', value: 'formales' },
+    { label: 'Casuales', value: 'casuales' }
 ]
 
 export default function CatalogView({ initialProducts }: CatalogViewProps) {
@@ -40,7 +41,7 @@ export default function CatalogView({ initialProducts }: CatalogViewProps) {
 
         // 1. Categoría
         if (selectedCategories.length > 0) {
-            result = result.filter(p => selectedCategories.includes(p.categoria))
+            result = result.filter(p => selectedCategories.some(cat => p.categoria.toLowerCase().includes(cat.toLowerCase())))
         }
 
         // 2. Precio

@@ -1,3 +1,4 @@
+'use client'
 import { useFavorites } from '@/context/FavoritesContext'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'

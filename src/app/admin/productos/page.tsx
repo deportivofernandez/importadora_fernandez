@@ -547,7 +547,7 @@ export default function ProductosAdmin() {
                                                         required
                                                     >
                                                         <option value="">Seleccionar...</option>
-                                                        <option value="deportivos">Deportivos</option>
+                                                        <option value="deportivo">Deportivos</option>
                                                         <option value="formales">Formales</option>
                                                         <option value="botas">Botas</option>
                                                         <option value="sandalias">Sandalias</option>

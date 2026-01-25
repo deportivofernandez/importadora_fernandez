@@ -107,19 +107,19 @@ export default function Navbar() {
 
     return (
         <nav className="sticky top-0 z-50 bg-white shadow-md">
-            {/* Top Bar - Naranja */}
-            <div className="bg-gradient-to-r from-orange-500 to-orange-600">
+            {/* Top Bar - Brand Black & Neon */}
+            <div className="bg-brand-black text-neon-500">
                 <div className="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center text-xs md:text-sm">
                     <div className="flex gap-4">
-                        <Link href="/admin/login" className="text-white hover:text-orange-100 transition font-medium">
-                            🔐 Panel Admin
+                        <Link href="/admin/login" className="hover:text-white transition font-bold tracking-wide">
+                            🔐 ADMIN PANEL
                         </Link>
                     </div>
                     <div className="hidden md:block">
-                        <span className="text-white font-medium">📦 Venta por Mayor - Pedido mínimo: 6 pares</span>
+                        <span className="font-bold tracking-wider">📦 VENTA MAYORISTA - PEDIDO MÍNIMO: 6 PARES</span>
                     </div>
                     <div className="md:hidden">
-                        <span className="text-white font-medium text-xs">📦 Venta por Mayor</span>
+                        <span className="font-bold">📦 VENTA MAYORISTA</span>
                     </div>
                 </div>
             </div>
@@ -128,16 +128,21 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 py-4">
                 <div className="flex items-center justify-between">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center gap-2">
-                        <div className="text-2xl md:text-3xl font-bold">
-                            <span className="text-orange-500">Zapatería</span>
-                            <span className="text-gray-900"> Moderna</span>
+                    {/* Logo I.F. */}
+                    <Link href="/" className="flex items-center gap-3 group">
+                        <div className="relative w-12 h-12 bg-camo-300 flex items-center justify-center rounded-lg border-2 border-neon-500 shadow-[0_0_10px_rgba(199,240,0,0.5)] overflow-hidden">
+                            <span className="text-neon-500 font-black text-3xl italic tracking-tighter leading-none relative z-10 drop-shadow-md">IF</span>
+                            {/* Stylized Shoe silhouette trace if possible, for now just text */}
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-brand-black font-black text-xl leading-none tracking-tight">IMPORTADORA</span>
+                            <span className="text-neon-600 font-black text-xl leading-none tracking-widest">FERNÁNDEZ</span>
                         </div>
                     </Link>
 
                     {/* Desktop Menu */}
-                    <div className="hidden lg:flex items-center gap-8 text-base font-semibold">
-                        <Link href="/" className="text-gray-700 hover:text-orange-500 transition">
+                    <div className="hidden lg:flex items-center gap-8 text-base font-bold uppercase tracking-wide">
+                        <Link href="/" className="text-brand-black hover:text-neon-600 transition">
                             Inicio
                         </Link>
 
@@ -147,7 +152,7 @@ export default function Navbar() {
                             onMouseEnter={() => setCatalogoOpen(true)}
                             onMouseLeave={() => setCatalogoOpen(false)}
                         >
-                            <button className="flex items-center gap-1 text-gray-700 hover:text-orange-500 transition">
+                            <button className="flex items-center gap-1 text-brand-black hover:text-neon-600 transition">
                                 Catálogo
                                 <ChevronDown size={18} className={`transition-transform ${catalogoOpen ? 'rotate-180' : ''}`} />
                             </button>
@@ -225,7 +230,7 @@ export default function Navbar() {
                                                 ))}
                                             </div>
                                             <div className="mt-3 text-right">
-                                                <Link href="/catalogo" className="text-xs font-bold text-orange-500 hover:text-orange-600 flex items-center justify-end gap-1">
+                                                <Link href="/catalogo" className="text-xs font-bold text-neon-600 hover:text-brand-black flex items-center justify-end gap-1 uppercase">
                                                     Ver todo el catálogo <ShoppingBag size={12} />
                                                 </Link>
                                             </div>
@@ -235,10 +240,10 @@ export default function Navbar() {
                             )}
                         </div>
 
-                        <Link href="/nuevos" className="text-gray-700 hover:text-orange-500 transition">
+                        <Link href="/nuevos" className="text-brand-black hover:text-neon-600 transition">
                             Nuevos
                         </Link>
-                        <Link href="/ofertas" className="text-orange-500 hover:text-orange-600 transition font-bold">
+                        <Link href="/ofertas" className="text-neon-600 hover:text-brand-black transition font-black">
                             🔥 Ofertas
                         </Link>
                     </div>
@@ -247,7 +252,7 @@ export default function Navbar() {
                     <div className="flex items-center gap-4">
                         {/* Search - Desktop Inteligente */}
                         <div className="hidden md:block relative">
-                            <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 gap-2 border border-gray-200 focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-100 transition-all w-64">
+                            <div className="flex items-center bg-camo-100 rounded-full px-4 py-2 gap-2 border-2 border-transparent focus-within:border-neon-500 focus-within:bg-white transition-all w-64">
                                 <Search size={20} className="text-gray-500" />
                                 <input
                                     type="text"
@@ -265,7 +270,7 @@ export default function Navbar() {
                                     }}
                                     suppressHydrationWarning
                                 />
-                                {isSearching && <div className="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>}
+                                {isSearching && <div className="w-4 h-4 border-2 border-neon-500 border-t-transparent rounded-full animate-spin"></div>}
                             </div>
 
                             {/* Resultados Flotantes */}
@@ -281,10 +286,10 @@ export default function Navbar() {
                                             >
                                                 <img src={result.url_imagen} alt={result.nombre} className="w-10 h-10 object-contain bg-white rounded-md border border-gray-100" />
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-bold text-gray-800 truncate group-hover:text-orange-600">{result.nombre}</p>
+                                                    <p className="text-sm font-bold text-brand-black truncate group-hover:text-neon-600">{result.nombre}</p>
                                                     <p className="text-xs text-gray-500">{result.categoria}</p>
                                                 </div>
-                                                <span className="text-sm font-bold text-orange-600">${result.precio}</span>
+                                                <span className="text-sm font-bold text-neon-600">${result.precio}</span>
                                             </Link>
                                         ))}
                                         <div className="border-t border-gray-100 mt-2 pt-2">
@@ -308,11 +313,11 @@ export default function Navbar() {
                         <div className="relative hidden md:block user-menu-container">
                             <button
                                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                className="flex items-center gap-2 text-gray-700 hover:text-orange-500 transition"
+                                className="flex items-center gap-2 text-brand-black hover:text-neon-600 transition"
                             >
                                 {user ? (
-                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
-                                        <User size={18} className="text-white" />
+                                    <div className="w-8 h-8 rounded-full bg-brand-black border border-neon-500 flex items-center justify-center">
+                                        <User size={18} className="text-neon-500" />
                                     </div>
                                 ) : (
                                     <User size={24} />
@@ -324,7 +329,7 @@ export default function Navbar() {
                                 <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50">
                                     {user ? (
                                         <>
-                                            <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-4 text-white">
+                                            <div className="bg-brand-black p-4 text-white border-b border-neon-500">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
                                                         <User size={24} className="text-white" />
@@ -336,30 +341,30 @@ export default function Navbar() {
                                                 </div>
                                             </div>
                                             <div className="p-2">
-                                                <Link href="/perfil"><button onClick={() => setUserMenuOpen(false)} className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-orange-50 rounded-lg text-left"><User size={18} className="text-orange-500" /><span className="font-medium">Mi perfil</span></button></Link>
-                                                <Link href="/mis-pedidos"><button onClick={() => setUserMenuOpen(false)} className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-orange-50 rounded-lg text-left"><Package size={18} className="text-orange-500" /><span className="font-medium">Mis pedidos</span></button></Link>
-                                                <Link href="/favoritos"><button onClick={() => setUserMenuOpen(false)} className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-orange-50 rounded-lg text-left"><Heart size={18} className="text-orange-500" /><span className="font-medium">Favoritos</span></button></Link>
+                                                <Link href="/perfil"><button onClick={() => setUserMenuOpen(false)} className="w-full flex items-center gap-3 px-4 py-3 text-brand-black hover:bg-camo-100 rounded-lg text-left"><User size={18} className="text-neon-600" /><span className="font-bold">Mi perfil</span></button></Link>
+                                                <Link href="/mis-pedidos"><button onClick={() => setUserMenuOpen(false)} className="w-full flex items-center gap-3 px-4 py-3 text-brand-black hover:bg-camo-100 rounded-lg text-left"><Package size={18} className="text-neon-600" /><span className="font-bold">Mis pedidos</span></button></Link>
+                                                <Link href="/favoritos"><button onClick={() => setUserMenuOpen(false)} className="w-full flex items-center gap-3 px-4 py-3 text-brand-black hover:bg-camo-100 rounded-lg text-left"><Heart size={18} className="text-neon-600" /><span className="font-bold">Favoritos</span></button></Link>
                                                 <div className="border-t border-gray-100 my-2"></div>
-                                                <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg text-left"><LogOut size={18} /><span className="font-medium">Cerrar sesión</span></button>
+                                                <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg text-left"><LogOut size={18} /><span className="font-bold">Cerrar sesión</span></button>
                                             </div>
                                         </>
                                     ) : (
                                         <div className="p-2">
-                                            <div className="p-3 bg-orange-50 rounded-lg mb-2">
-                                                <p className="text-orange-800 font-bold text-xs uppercase tracking-wide mb-1">Bienvenido</p>
+                                            <div className="p-3 bg-neon-400/20 border border-neon-500/30 rounded-lg mb-2">
+                                                <p className="text-brand-black font-black text-xs uppercase tracking-wide mb-1">Bienvenido</p>
                                                 <p className="text-slate-600 text-xs">Accede a tu historial local</p>
                                             </div>
 
                                             <Link href="/mis-pedidos">
-                                                <button onClick={() => setUserMenuOpen(false)} className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg text-left transition-colors">
-                                                    <Package size={18} className="text-orange-500" />
+                                                <button onClick={() => setUserMenuOpen(false)} className="w-full flex items-center gap-3 px-4 py-3 text-brand-black hover:bg-camo-100 rounded-lg text-left transition-colors">
+                                                    <Package size={18} className="text-neon-600" />
                                                     <span className="font-medium text-sm">Mis Pedidos</span>
                                                 </button>
                                             </Link>
 
                                             <Link href="/favoritos">
-                                                <button onClick={() => setUserMenuOpen(false)} className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg text-left transition-colors">
-                                                    <Heart size={18} className="text-orange-500" />
+                                                <button onClick={() => setUserMenuOpen(false)} className="w-full flex items-center gap-3 px-4 py-3 text-brand-black hover:bg-camo-100 rounded-lg text-left transition-colors">
+                                                    <Heart size={18} className="text-neon-600" />
                                                     <span className="font-medium text-sm">Favoritos</span>
                                                 </button>
                                             </Link>
@@ -379,10 +384,10 @@ export default function Navbar() {
                         </div>
 
                         {/* CART BUTTON WITH BADGE */}
-                        <Link href="/carrito" className="relative text-gray-700 hover:text-orange-500 transition hidden md:block group">
+                        <Link href="/carrito" className="relative text-brand-black hover:text-neon-600 transition hidden md:block group">
                             <ShoppingBag size={24} className="group-hover:scale-110 transition-transform" />
                             {cartCount > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white animate-bounce-short">
+                                <span className="absolute -top-1 -right-1 bg-neon-500 text-brand-black text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-brand-black animate-bounce-short">
                                     {cartCount}
                                 </span>
                             )}
@@ -391,7 +396,7 @@ export default function Navbar() {
                         {/* Mobile Menu Toggle */}
                         <button
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            className="lg:hidden text-gray-700 hover:text-orange-500 transition"
+                            className="lg:hidden text-brand-black hover:text-neon-600 transition"
                         >
                             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
                         </button>

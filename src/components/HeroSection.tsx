@@ -44,7 +44,7 @@ export default function HeroSection({ slides }: HeroProps) {
 
     return (
         <section
-            className="relative bg-gradient-to-br from-orange-50 via-white to-blue-50 overflow-hidden min-h-[600px] flex items-center"
+            className="relative bg-gradient-to-br from-camo-100 via-white to-camo-100 overflow-hidden min-h-[600px] flex items-center"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
@@ -54,7 +54,7 @@ export default function HeroSection({ slides }: HeroProps) {
                     {/* LADO IZQUIERDO: Texto con transición */}
                     <div className="space-y-8 z-10 animate-fade-in" key={`text-${current}`}>
                         {activeSlide.tag && (
-                            <span className="inline-block text-orange-600 font-black tracking-widest uppercase text-xs bg-orange-100 px-4 py-2 rounded-full ring-2 ring-orange-200 animate-pulse">
+                            <span className="inline-block text-brand-black font-black tracking-widest uppercase text-xs bg-neon-500 px-4 py-2 rounded-full ring-2 ring-neon-400 animate-pulse border border-brand-black/20">
                                 {activeSlide.tag}
                             </span>
                         )}
@@ -69,13 +69,13 @@ export default function HeroSection({ slides }: HeroProps) {
 
                         <div className="flex flex-wrap gap-4 pt-4">
                             <Link href={activeSlide.product_link}>
-                                <button className="bg-slate-900 hover:bg-orange-600 text-white font-bold py-4 px-10 rounded-full shadow-xl transition-all transform hover:scale-105 hover:shadow-2xl flex items-center gap-3 group">
+                                <button className="bg-brand-black hover:bg-neon-500 hover:text-brand-black text-neon-500 font-bold py-4 px-10 rounded-full shadow-xl transition-all transform hover:scale-105 hover:shadow-2xl flex items-center gap-3 group border border-neon-500/50">
                                     Ver Ahora
                                     <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                                 </button>
                             </Link>
                             <Link href="/catalogo">
-                                <button className="bg-white hover:bg-slate-50 text-slate-900 font-bold py-4 px-8 rounded-full shadow-md border-2 border-slate-100 transition-all hover:border-slate-300">
+                                <button className="bg-white hover:bg-camo-100 text-brand-black font-bold py-4 px-8 rounded-full shadow-md border-2 border-brand-black/10 transition-all hover:border-brand-black/30">
                                     Explorar Todo
                                 </button>
                             </Link>
@@ -85,7 +85,7 @@ export default function HeroSection({ slides }: HeroProps) {
                     {/* LADO DERECHO: Imagen con transición */}
                     <div className="relative h-[400px] md:h-[500px] w-full flex items-center justify-center">
                         {/* Círculo decorativo dinámico */}
-                        <div className={`absolute inset-0 rounded-full blur-3xl opacity-30 scale-110 transition-colors duration-1000 ${current % 2 === 0 ? 'bg-gradient-to-tr from-orange-300 to-yellow-200' : 'bg-gradient-to-tr from-blue-300 to-purple-200'}`}></div>
+                        <div className={`absolute inset-0 rounded-full blur-3xl opacity-30 scale-110 transition-colors duration-1000 ${current % 2 === 0 ? 'bg-gradient-to-tr from-neon-500 to-camo-300' : 'bg-gradient-to-tr from-brand-black to-neon-600'}`}></div>
 
                         {/* Imagen del producto con bordes suaves */}
                         <div className="relative z-10 w-full h-full flex items-center justify-center p-6" key={`img-${current}`}>
@@ -127,8 +127,8 @@ export default function HeroSection({ slides }: HeroProps) {
                         key={idx}
                         onClick={() => setCurrent(idx)}
                         className={`w-3 h-3 rounded-full transition-all duration-300 ${idx === current
-                            ? 'bg-slate-900 w-8'
-                            : 'bg-slate-300 hover:bg-slate-400'
+                            ? 'bg-brand-black w-8 border border-neon-500'
+                            : 'bg-camo-300 hover:bg-camo-800'
                             }`}
                         aria-label={`Ir a diapositiva ${idx + 1}`}
                     />

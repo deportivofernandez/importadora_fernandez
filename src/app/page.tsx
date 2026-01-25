@@ -75,9 +75,10 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-gray-50 relative overflow-hidden">
       {/* Decoración de fondo */}
-      <div className="fixed top-20 right-10 w-72 h-72 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-      <div className="fixed top-40 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-      <div className="fixed bottom-20 right-1/3 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      {/* Decoración de fondo */}
+      <div className="fixed top-20 right-10 w-72 h-72 bg-neon-400 rounded-full mix-blend-overlay filter blur-3xl opacity-10 animate-blob"></div>
+      <div className="fixed top-40 left-10 w-72 h-72 bg-gray-400 rounded-full mix-blend-overlay filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
+      <div className="fixed bottom-20 right-1/3 w-72 h-72 bg-neon-600 rounded-full mix-blend-overlay filter blur-3xl opacity-10 animate-blob animation-delay-4000"></div>
 
       {/* Navbar */}
       <Navbar />
@@ -95,13 +96,13 @@ export default async function Home() {
 
               {/* Texto a la Izquierda */}
               <div className="relative z-20 max-w-[50%]">
-                <div className="inline-block bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-white mb-3">
+                <div className="inline-block bg-brand-black/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-black text-white mb-3 border border-white/30 uppercase tracking-widest">
                   ✨ Nuevo Ingreso
                 </div>
                 <h3 className="text-white text-2xl font-black leading-tight line-clamp-2 drop-shadow-md">
                   {pNuevo?.nombre || 'Nueva Colección'}
                 </h3>
-                <p className="text-orange-100 text-sm font-medium mt-1">
+                <p className="text-neon-200 text-sm font-medium mt-1">
                   {getColorName(pNuevo)}
                 </p>
               </div>
@@ -186,22 +187,22 @@ export default async function Home() {
           </div>
           <div className="flex flex-wrap gap-2">
             <Link href="/catalogo">
-              <button className="px-5 py-2.5 rounded-full bg-slate-900 text-white font-semibold hover:bg-orange-600 transition shadow-md">
+              <button className="px-5 py-2.5 rounded-full bg-brand-black text-neon-500 font-bold hover:bg-neon-500 hover:text-brand-black transition shadow-md border border-neon-500/30">
                 Ver Todo
               </button>
             </Link>
             <Link href="/catalogo/adulto">
-              <button className="px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:border-orange-500 hover:text-orange-500 transition text-sm font-semibold">
+              <button className="px-5 py-2.5 rounded-full bg-white border border-slate-200 text-brand-black hover:border-neon-500 hover:bg-neon-50 transition text-sm font-bold">
                 Adulto
               </button>
             </Link>
             <Link href="/catalogo/niño">
-              <button className="px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:border-orange-500 hover:text-orange-500 transition text-sm font-semibold">
+              <button className="px-5 py-2.5 rounded-full bg-white border border-slate-200 text-brand-black hover:border-neon-500 hover:bg-neon-50 transition text-sm font-bold">
                 Niño
               </button>
             </Link>
             <Link href="/catalogo/deportivo">
-              <button className="px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:border-orange-500 hover:text-orange-500 transition text-sm font-semibold">
+              <button className="px-5 py-2.5 rounded-full bg-white border border-slate-200 text-brand-black hover:border-neon-500 hover:bg-neon-50 transition text-sm font-bold">
                 Deportivo
               </button>
             </Link>

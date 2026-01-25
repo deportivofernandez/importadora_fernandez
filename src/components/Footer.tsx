@@ -8,20 +8,20 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                     {/* Columna 1: Sobre Nosotros */}
                     <div>
-                        <h3 className="text-2xl font-bold mb-4">
-                            <span className="text-orange-500">Zapatería</span> Moderna
+                        <h3 className="text-2xl font-black mb-4">
+                            <span className="text-neon-500">Importadora</span> Fernández
                         </h3>
                         <p className="text-gray-400 mb-6 leading-relaxed">
                             Tu destino para encontrar los mejores zapatos con estilo, calidad y comodidad. Más de 10 años vistiendo tus pasos.
                         </p>
                         <div className="flex gap-4">
-                            <a href="#" className="bg-gray-800 hover:bg-orange-500 p-3 rounded-full transition">
+                            <a href="#" className="bg-brand-black hover:bg-neon-500 hover:text-brand-black border border-gray-700 p-3 rounded-md transition duration-300">
                                 <Facebook size={20} />
                             </a>
-                            <a href="#" className="bg-gray-800 hover:bg-orange-500 p-3 rounded-full transition">
+                            <a href="#" className="bg-brand-black hover:bg-neon-500 hover:text-brand-black border border-gray-700 p-3 rounded-md transition duration-300">
                                 <Instagram size={20} />
                             </a>
-                            <a href="#" className="bg-gray-800 hover:bg-orange-500 p-3 rounded-full transition">
+                            <a href="#" className="bg-brand-black hover:bg-neon-500 hover:text-brand-black border border-gray-700 p-3 rounded-md transition duration-300">
                                 <Twitter size={20} />
                             </a>
                         </div>
@@ -32,27 +32,27 @@ export default function Footer() {
                         <h4 className="text-lg font-bold mb-4">Enlaces Rápidos</h4>
                         <ul className="space-y-3">
                             <li>
-                                <Link href="/" className="text-gray-400 hover:text-orange-500 transition">
+                                <Link href="/" className="text-gray-400 hover:text-neon-500 transition font-medium">
                                     Inicio
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/#catalogo" className="text-gray-400 hover:text-orange-500 transition">
+                                <Link href="/#catalogo" className="text-gray-400 hover:text-neon-500 transition font-medium">
                                     Catálogo
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/#nuevos" className="text-gray-400 hover:text-orange-500 transition">
+                                <Link href="/#nuevos" className="text-gray-400 hover:text-neon-500 transition font-medium">
                                     Nuevos Arrivals
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/#ofertas" className="text-gray-400 hover:text-orange-500 transition">
+                                <Link href="/#ofertas" className="text-gray-400 hover:text-neon-500 transition font-medium">
                                     Ofertas
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/admin/login" className="text-gray-400 hover:text-orange-500 transition">
+                                <Link href="/admin/login" className="text-gray-400 hover:text-neon-500 transition font-medium">
                                     Admin
                                 </Link>
                             </li>
@@ -64,27 +64,27 @@ export default function Footer() {
                         <h4 className="text-lg font-bold mb-4">Categorías</h4>
                         <ul className="space-y-3">
                             <li>
-                                <a href="#" className="text-gray-400 hover:text-orange-500 transition">
+                                <a href="#" className="text-gray-400 hover:text-neon-500 transition font-medium">
                                     Zapatos para Adulto
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="text-gray-400 hover:text-orange-500 transition">
+                                <a href="#" className="text-gray-400 hover:text-neon-500 transition font-medium">
                                     Zapatos para Niño
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="text-gray-400 hover:text-orange-500 transition">
+                                <a href="#" className="text-gray-400 hover:text-neon-500 transition font-medium">
                                     Deportivos
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="text-gray-400 hover:text-orange-500 transition">
+                                <a href="#" className="text-gray-400 hover:text-neon-500 transition font-medium">
                                     Botas
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="text-gray-400 hover:text-orange-500 transition">
+                                <a href="#" className="text-gray-400 hover:text-neon-500 transition font-medium">
                                     Sandalias
                                 </a>
                             </li>
@@ -96,22 +96,22 @@ export default function Footer() {
                         <h4 className="text-lg font-bold mb-4">Contacto</h4>
                         <ul className="space-y-4">
                             <li className="flex items-start gap-3">
-                                <MapPin size={20} className="text-orange-500 mt-1 flex-shrink-0" />
+                                <MapPin size={20} className="text-neon-500 mt-1 flex-shrink-0" />
                                 <span className="text-gray-400">
                                     Av. Principal #123<br />
-                                    Ciudad, País
+                                    La Paz, Bolivia
                                 </span>
                             </li>
                             <li className="flex items-center gap-3">
-                                <Phone size={20} className="text-orange-500 flex-shrink-0" />
-                                <a href="tel:+1234567890" className="text-gray-400 hover:text-orange-500 transition">
-                                    +123 456 7890
+                                <Phone size={20} className="text-neon-500 flex-shrink-0" />
+                                <a href="tel:+59178303866" className="text-gray-400 hover:text-neon-500 transition">
+                                    +591 78303866
                                 </a>
                             </li>
                             <li className="flex items-center gap-3">
-                                <Mail size={20} className="text-orange-500 flex-shrink-0" />
-                                <a href="mailto:info@zapateria.com" className="text-gray-400 hover:text-orange-500 transition">
-                                    info@zapateria.com
+                                <Mail size={20} className="text-neon-500 flex-shrink-0" />
+                                <a href="mailto:ventas@importadorafernandez.com" className="text-gray-400 hover:text-neon-500 transition">
+                                    ventas@importadorafernandez.com
                                 </a>
                             </li>
                         </ul>
@@ -121,8 +121,8 @@ export default function Footer() {
                 {/* Línea divisoria */}
                 <div className="border-t border-gray-700 mt-12 pt-8">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                        <p className="text-gray-400 text-sm">
-                            © 2024 Zapatería Moderna. Todos los derechos reservados.
+                        <p className="text-gray-500 text-sm">
+                            © 2024 Importadora Fernández. Todos los derechos reservados.
                         </p>
                         <div className="flex gap-6 text-sm">
                             <a href="#" className="text-gray-400 hover:text-orange-500 transition">

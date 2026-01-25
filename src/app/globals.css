@@ -3,16 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #B7B7B7; /* Camo Grey Base */
+  --foreground: #1A1A1A; /* Brand Black */
 }
 
-@media (prefers-color-scheme: dark) {
+/* Enforce Brand Identity - No automatic dark mode for now */
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   background: var(--background);

@@ -90,7 +90,7 @@ export default function ProductCard({ zapato, onQuickView }: { zapato: any, onQu
                     <div className={`absolute bottom-4 left-0 right-0 flex justify-center gap-3 transition-all duration-300 ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
                         <button
                             onClick={handleQuickView}
-                            className="bg-white text-slate-800 p-3 rounded-full shadow-lg hover:bg-orange-500 hover:text-white transition-colors flex items-center justify-center group/btn"
+                            className="bg-brand-black text-neon-500 p-3 rounded-full shadow-lg hover:bg-neon-500 hover:text-brand-black transition-colors flex items-center justify-center group/btn border border-neon-500/50"
                             title="Vista Rápida"
                         >
                             <Eye size={20} />
@@ -103,7 +103,7 @@ export default function ProductCard({ zapato, onQuickView }: { zapato: any, onQu
                     <div className="mb-2">
                         <span className="text-xs uppercase tracking-wider text-slate-400 font-bold">{zapato.categoria}</span>
                     </div>
-                    <h3 className="text-lg font-bold text-slate-800 mb-1 leading-tight group-hover:text-orange-600 transition-colors line-clamp-2">
+                    <h3 className="text-lg font-bold text-slate-800 mb-1 leading-tight group-hover:text-neon-600 transition-colors line-clamp-2">
                         {zapato.nombre}
                     </h3>
 
@@ -140,7 +140,7 @@ export default function ProductCard({ zapato, onQuickView }: { zapato: any, onQu
                             </button>
 
                             <span
-                                className={`p-3 rounded-full bg-slate-900 text-white shadow-lg transition-transform duration-300 flex items-center justify-center ${isHovered ? 'scale-110 rotate-3' : ''}`}
+                                className={`p-3 rounded-full bg-brand-black text-neon-500 border border-neon-500 shadow-lg transition-transform duration-300 flex items-center justify-center ${isHovered ? 'scale-110 rotate-3 bg-neon-500 text-brand-black' : ''}`}
                             >
                                 <ShoppingBag size={20} />
                             </span>
