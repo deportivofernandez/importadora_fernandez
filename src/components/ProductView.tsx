@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { supabase, proxyImageUrl } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, MessageCircle, ShieldCheck, Truck, Package, Info, ShoppingBag, Check } from 'lucide-react'
@@ -104,7 +104,7 @@ export default function ProductView({ producto, productosRelacionados }: Product
                         <div className="bg-slate-50 p-6 lg:p-12 flex flex-col items-center justify-center relative group">
                             <div className="relative w-full aspect-square max-w-lg mx-auto">
                                 <img
-                                    src={selectedImage}
+                                    src={proxyImageUrl(selectedImage)}
                                     alt={producto.nombre}
                                     className="w-full h-full object-contain mix-blend-multiply transition-all duration-500 hover:scale-105 drop-shadow-xl"
                                 />

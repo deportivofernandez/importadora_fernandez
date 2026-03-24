@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { Plus } from 'lucide-react'
+import { Share2, X } from 'lucide-react'
 
 export default function SocialSpeedDial() {
     const [isOpen, setIsOpen] = useState(false)
@@ -20,7 +20,7 @@ export default function SocialSpeedDial() {
         },
         {
             name: 'Instagram',
-            color: 'bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500', // Gradiente oficial de Instagram
+            color: 'bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500',
             icon: (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
                     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -53,46 +53,49 @@ export default function SocialSpeedDial() {
     ]
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-4">
-            {/* Burbujas de Redes Sociales */}
-            <div className="flex flex-col-reverse gap-3">
-                {socials.map((social, index) => (
-                    <a
-                        key={social.name}
-                        href={social.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`
-                            relative group flex items-center justify-center w-12 h-12 rounded-full shadow-lg text-white transition-all duration-300 transform
-                            ${social.color}
-                            ${isOpen
-                                ? 'translate-y-0 opacity-100 scale-100'
-                                : 'translate-y-10 opacity-0 scale-0 pointer-events-none'}
-                        `}
-                        style={{
-                            transitionDelay: isOpen ? `${index * 50}ms` : '0ms'
-                        }}
-                    >
-                        {social.icon}
-
-                        {/* Tooltip Lateral */}
-                        <span className="absolute right-14 bg-gray-800 text-white text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                            {social.name}
-                        </span>
-                    </a>
-                ))}
+        <div className="fixed bottom-[80px] lg:bottom-6 right-6 z-50 flex flex-col items-end">
+            {/* Burbuja Pastilla Horizontal Blanca */}
+            <div 
+                className={`
+                    absolute bottom-[76px] right-0 flex items-center justify-center bg-white p-2 sm:p-3 rounded-[32px] shadow-[0_10px_40px_rgba(0,0,0,0.15)] transition-all duration-300 origin-bottom-right md:origin-bottom
+                    ${isOpen ? 'opacity-100 scale-100 translate-y-0 translate-x-0' : 'opacity-0 scale-50 translate-y-10 translate-x-4 pointer-events-none'}
+                `}
+            >
+                {/* Cuadrito de punta de burbuja hacia abajo */}
+                <div className="absolute -bottom-[6px] right-6 w-4 h-4 bg-white rotate-45 transform origin-center -z-10 rounded-sm" />
+                
+                <div className="flex flex-row items-center justify-center gap-3 bg-white z-10 px-2 rounded-[32px]">
+                    {socials.map((social) => (
+                        <a
+                            key={social.name}
+                            href={social.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-full shadow-sm text-white transition-transform hover:scale-110 hover:-translate-y-1 ${social.color}`}
+                        >
+                            {social.icon}
+                        </a>
+                    ))}
+                </div>
             </div>
 
-            {/* Botón Principal (Toggle) */}
+            {/* Botón Principal "Redes" */}
             <button
                 onClick={toggleOpen}
                 className={`
-                    flex items-center justify-center w-14 h-14 rounded-full shadow-2xl text-white transition-all duration-300 z-50
-                    ${isOpen ? 'bg-gray-800 rotate-45' : 'bg-orange-500 hover:scale-110 hover:bg-orange-600'}
+                    relative flex flex-col items-center justify-center min-w-[64px] h-16 px-4 rounded-[20px] shadow-xl text-white outline-none transition-all duration-300 z-50 overflow-hidden
+                    ${isOpen ? 'bg-[#1A2634] scale-95 shadow-md' : 'bg-[#FF5A26] hover:scale-105 hover:bg-[#E84E1A] hover:shadow-2xl'}
                 `}
-                aria-label="Abrir redes sociales"
+                aria-label="Redes Sociales"
             >
-                <Plus size={32} />
+                {isOpen ? (
+                    <X size={28} className="text-white" />
+                ) : (
+                    <div className="flex flex-col items-center gap-[2px]">
+                        <Share2 size={24} className="text-white fill-white/10" />
+                        <span className="text-[12px] font-bold tracking-wide leading-none">Redes</span>
+                    </div>
+                )}
             </button>
         </div>
     )

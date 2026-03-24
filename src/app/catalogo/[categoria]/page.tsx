@@ -27,26 +27,25 @@ export default async function CategoriaPage({ params }: Props) {
         .from('zapatos')
         .select('*')
         .eq('disponible', true)
-        // Usamos 'ilike' para que no importe mayúsculas/minúsculas o coincidencia parcial
-        // Usamos 'ilike' con comodines % para coincidencia parcial (ej: "deportivo" encuentra "Deportivos")
-        .ilike('categoria', `%${dbCategoria}%`)
+        // Usamos 'or' para buscar coincidencia parcial en múltiples columnas clave
+        .or(`categoria.ilike.%${dbCategoria}%,nombre.ilike.%${dbCategoria}%,genero.ilike.%${dbCategoria}%,subcategoria.ilike.%${dbCategoria}%`)
         .order('fecha_creacion', { ascending: false })
 
     return (
-        <main className="min-h-screen bg-slate-50">
+        <main className="min-h-screen bg-navy-600">
             <Navbar />
 
             {/* Header de Categoría */}
-            <div className="bg-white border-b border-slate-200">
+            <div className="bg-navy-700 border-b border-white/10">
                 <div className="max-w-7xl mx-auto px-4 py-16 text-center">
                     <span className="text-orange-500 font-bold tracking-widest uppercase text-sm mb-2 block">
                         Categoría
                     </span>
-                    <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight capitalize">
+                    <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight capitalize">
                         {categoria.replace('-', ' ')}
                     </h1>
-                    <p className="text-lg text-slate-500 max-w-2xl mx-auto">
-                        Encuentra los mejores modelos en {categoria}, diseñados para estilo y confort.
+                    <p className="text-lg text-white/60 max-w-2xl mx-auto">
+                        Encuentra los mejores modelos en {categoria.replace('-', ' ')}, diseñados para el mercado mayorista.
                     </p>
                 </div>
             </div>

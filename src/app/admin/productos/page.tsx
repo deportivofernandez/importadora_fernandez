@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { supabase, proxyImageUrl } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -114,34 +114,29 @@ export default function ProductosAdmin() {
             // Subir imagen principal
             if (imageFile) {
                 console.log('Subiendo imagen principal...')
-                // Usar nombre sanitizado
                 const cleanName = sanitizeFileName(imageFile.name)
                 const fileName = `${Date.now()}_${cleanName}`
 
                 const { error: uploadError } = await supabase.storage
-                    .from('imagenes-zapatos')
+                    .from('zapatos')
                     .upload(fileName, imageFile)
 
                 if (uploadError) {
-                    showNotification('Error al subir imagen principal: ' + uploadError.message, 'error')
+                    showNotification('Error al subir imagen: ' + uploadError.message, 'error')
                     return
                 }
 
-                const { data } = supabase.storage
-                    .from('imagenes-zapatos')
-                    .getPublicUrl(fileName)
+                const { data } = supabase.storage.from('zapatos').getPublicUrl(fileName)
                 url_imagen = data.publicUrl
             }
 
             // Subir imagen hover
             if (imageHoverFile) {
-                console.log('Subiendo imagen hover...')
-                // Usar nombre sanitizado
                 const cleanName = sanitizeFileName(imageHoverFile.name)
                 const fileName = `hover_${Date.now()}_${cleanName}`
 
                 const { error: uploadError } = await supabase.storage
-                    .from('imagenes-zapatos')
+                    .from('zapatos')
                     .upload(fileName, imageHoverFile)
 
                 if (uploadError) {
@@ -149,42 +144,50 @@ export default function ProductosAdmin() {
                     return
                 }
 
-                const { data } = supabase.storage
-                    .from('imagenes-zapatos')
-                    .getPublicUrl(fileName)
+                const { data } = supabase.storage.from('zapatos').getPublicUrl(fileName)
                 imagen_hover = data.publicUrl
             }
 
-            const productData: any = {
+            // Construir datos — solo columnas base que seguro existen
+            const productBase: any = {
                 nombre: formData.nombre,
                 descripcion: formData.descripcion || null,
                 precio: parseFloat(formData.precio),
                 categoria: formData.categoria,
+                disponible: formData.disponible,
+                url_imagen,
+            }
+
+            // Columnas opcionales (pueden no existir en versiones antiguas de la tabla)
+            const productExtra: any = {
                 tallas: formData.tallas ? formData.tallas.split(',').map(t => t.trim()).filter(t => t) : [],
                 colores: formData.colores ? formData.colores.split(',').map(c => c.trim()).filter(c => c) : [],
                 etiquetas: formData.etiquetas || [],
-                url_imagen,
                 imagen_hover,
-                origen: formData.origen, // Nuevo: Enviar origen
-                disponible: formData.disponible
+                origen: formData.origen,
             }
 
-            if (editingProduct) {
-                // Actualizar
-                const { error } = await supabase
-                    .from('zapatos')
-                    .update(productData)
-                    .eq('id', editingProduct.id)
+            const productData = { ...productBase, ...productExtra }
 
-                if (error) throw error
+            if (editingProduct) {
+                const { error } = await supabase.from('zapatos').update(productData).eq('id', editingProduct.id)
+                if (error) {
+                    console.error('Error Supabase update:', error)
+                    throw new Error(error.message || error.details || JSON.stringify(error))
+                }
                 showNotification('Producto actualizado correctamente', 'success')
             } else {
-                // Crear
-                const { error } = await supabase
-                    .from('zapatos')
-                    .insert([productData])
-
-                if (error) throw error
+                const { error } = await supabase.from('zapatos').insert([productData])
+                if (error) {
+                    console.error('Error Supabase insert:', error)
+                    // Si falla por columna desconocida, intenta solo con las columnas base
+                    if (error.code === '42703' || error.message?.includes('column')) {
+                        const { error: error2 } = await supabase.from('zapatos').insert([productBase])
+                        if (error2) throw new Error(error2.message || JSON.stringify(error2))
+                    } else {
+                        throw new Error(error.message || error.details || JSON.stringify(error))
+                    }
+                }
                 showNotification('Producto creado correctamente', 'success')
             }
 
@@ -192,8 +195,9 @@ export default function ProductosAdmin() {
             loadProductos()
 
         } catch (err: any) {
-            console.error('Error inesperado:', err)
-            showNotification('Error: ' + err.message, 'error')
+            const msg = err?.message || err?.details || JSON.stringify(err) || 'Error desconocido'
+            console.error('Error inesperado:', msg, err)
+            showNotification('Error: ' + msg, 'error')
         }
     }
 
@@ -365,7 +369,7 @@ export default function ProductosAdmin() {
                         >
                             <div className="aspect-square bg-white relative p-6 flex items-center justify-center group-hover:bg-slate-50 transition-colors">
                                 <img
-                                    src={producto.url_imagen}
+                                    src={proxyImageUrl(producto.url_imagen)}
                                     alt={producto.nombre}
                                     className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-500"
                                 />
@@ -457,8 +461,8 @@ export default function ProductosAdmin() {
 
             {/* Modal */}
             {showModal && (
-                <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[92vh] overflow-hidden">
+                <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-start justify-center z-50 p-4 overflow-y-auto">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[92vh] overflow-y-auto my-auto">
                         {/* Header */}
                         <div className="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 px-6 py-4 flex justify-between items-center border-b border-slate-600">
                             <div>

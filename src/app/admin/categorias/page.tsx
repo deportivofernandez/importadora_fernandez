@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { supabase, proxyImageUrl } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Plus, Edit, Trash2, X, Upload, Home, LayoutGrid, Check, Search, AlertCircle } from 'lucide-react'
@@ -141,12 +141,12 @@ export default function CategoriasAdmin() {
         if (imageFile) {
             const fileName = `categoria_${Date.now()}_${imageFile.name}`
             const { error: uploadError } = await supabase.storage
-                .from('imagenes-zapatos')
+                .from('zapatos')
                 .upload(fileName, imageFile)
 
             if (!uploadError) {
                 const { data } = supabase.storage
-                    .from('imagenes-zapatos')
+                    .from('zapatos')
                     .getPublicUrl(fileName)
                 imagen_url = data.publicUrl
             }
@@ -344,7 +344,7 @@ export default function CategoriasAdmin() {
                             {/* Imagen de Portada */}
                             <div className="aspect-[16/9] bg-slate-100 relative overflow-hidden group-hover:opacity-95 transition-opacity">
                                 <img
-                                    src={categoria.imagen_url || '/placeholder-category.jpg'}
+                                    src={categoria.imagen_url ? proxyImageUrl(categoria.imagen_url) : `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='225' fill='none'%3E%3Crect width='400' height='225' fill='%23F1F5F9'/%3E%3Crect x='170' y='82' width='60' height='45' rx='4' fill='%23CBD5E1'/%3E%3Cpath d='M185 95h30M185 105h20' stroke='%2394A3B8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E`}
                                     alt={categoria.nombre}
                                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                                 />
@@ -435,8 +435,8 @@ export default function CategoriasAdmin() {
 
             {/* Modal Profesional */}
             {showModal && (
-                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
-                    <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden animate-slide-up">
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-start justify-center z-50 p-4 overflow-y-auto animate-fade-in">
+                    <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl overflow-y-auto max-h-[90vh] my-auto animate-slide-up">
                         {/* Modal Header */}
                         <div className="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 px-8 py-6 flex justify-between items-center">
                             <div>

@@ -43,10 +43,10 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Modal
             // 1. Subir imagen con nombre único
             const fileExt = imageFile.name.split('.').pop()
             const fileName = `${Date.now()}.${fileExt}`
-            const { error: uploadError } = await supabase.storage.from('imagenes-zapatos').upload(fileName, imageFile)
+            const { error: uploadError } = await supabase.storage.from('zapatos').upload(fileName, imageFile)
             if (uploadError) throw uploadError
 
-            const { data: publicUrlData } = supabase.storage.from('imagenes-zapatos').getPublicUrl(fileName)
+            const { data: publicUrlData } = supabase.storage.from('zapatos').getPublicUrl(fileName)
 
             // 2. Convertir tallas de texto a array
             const sizeArray = formData.sizes.split(',').map(s => s.trim()).filter(s => s !== '')

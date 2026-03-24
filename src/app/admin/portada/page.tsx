@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { supabase, proxyImageUrl } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Upload, Eye, EyeOff, Image as ImageIcon, Sparkles, Home, Save, Check } from 'lucide-react'
@@ -55,12 +55,12 @@ export default function PortadaAdmin() {
         if (imageFile) {
             const fileName = `portada_${Date.now()}_${imageFile.name}`
             const { error: uploadError } = await supabase.storage
-                .from('imagenes-zapatos')
+                .from('zapatos')
                 .upload(fileName, imageFile)
 
             if (!uploadError) {
                 const { data } = supabase.storage
-                    .from('imagenes-zapatos')
+                    .from('zapatos')
                     .getPublicUrl(fileName)
                 url_imagen = data.publicUrl
             } else {
@@ -184,7 +184,7 @@ export default function PortadaAdmin() {
                             <div className="aspect-[16/9] bg-slate-100 relative overflow-hidden">
                                 {portada?.url_imagen || imageFile ? (
                                     <img
-                                        src={imageFile ? URL.createObjectURL(imageFile) : portada.url_imagen}
+                                        src={imageFile ? URL.createObjectURL(imageFile) : proxyImageUrl(portada.url_imagen)}
                                         alt="Portada Preview"
                                         className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
                                     />

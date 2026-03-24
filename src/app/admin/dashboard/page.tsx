@@ -41,11 +41,13 @@ export default function AdminDashboard() {
         productosNuevos: 0
     })
     const [chartData, setChartData] = useState<any[]>([])
+    const [isMounted, setIsMounted] = useState(false)
 
     // Colores para gráficos
     const COLORS = ['#C7F000', '#1A1A1A', '#525252', '#9ca3af', '#d1d5db'];
 
     useEffect(() => {
+        setIsMounted(true)
         checkAuth()
         loadStats()
     }, [])
@@ -254,22 +256,32 @@ export default function AdminDashboard() {
                             <button className="text-xs font-bold text-gray-400 hover:text-neon-600 uppercase transition-colors">Descargar Reporte</button>
                         </div>
                         <div className="h-[300px] w-full">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} dy={10} />
-                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
-                                    <Tooltip
-                                        cursor={{ fill: '#f9fafb' }}
-                                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                                    />
-                                    <Bar dataKey="cantidad" fill="#1A1A1A" radius={[4, 4, 0, 0]} barSize={40}>
-                                        {chartData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={index === 0 ? '#C7F000' : '#1A1A1A'} />
-                                        ))}
-                                    </Bar>
-                                </BarChart>
-                            </ResponsiveContainer>
+                            {!isMounted ? (
+                                <div className="w-full h-full flex items-center justify-center text-gray-300">Cargando gráfico...</div>
+                            ) : chartData.length > 0 ? (
+                                <ResponsiveContainer width="100%" height={300} minHeight={300}>
+                                    <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                                        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} dy={10} />
+                                        <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
+                                        <Tooltip
+                                            cursor={{ fill: '#f9fafb' }}
+                                            contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                                        />
+                                        <Bar dataKey="cantidad" fill="#1A1A1A" radius={[4, 4, 0, 0]} barSize={40}>
+                                            {chartData.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={index === 0 ? '#C7F000' : '#1A1A1A'} />
+                                            ))}
+                                        </Bar>
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <div className="h-full flex flex-col items-center justify-center text-slate-300 gap-3">
+                                    <BarChart3 size={40} className="text-slate-200" />
+                                    <p className="text-sm font-medium text-slate-400">Sin datos aún</p>
+                                    <p className="text-xs text-slate-300">Agrega productos para ver el gráfico</p>
+                                </div>
+                            )}
                         </div>
                     </div>
 

@@ -3,9 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --background: #B7B7B7; /* Camo Grey Base */
-  --foreground: #1A1A1A; /* Brand Black */
+  --background: #1B2436;
+  --foreground: #FFFFFF;
+  --navy-main:  #1B2436;
+  --navy-dark:  #141B29;
+  --navy-deeper:#0D121C;
 }
+
 
 /* Enforce Brand Identity - No automatic dark mode for now */
 /* @media (prefers-color-scheme: dark) {
@@ -108,6 +112,7 @@ body {
 .delay-300 {
   animation-delay: 0.3s;
 }
+
 @keyframes shimmer {
   100% {
     transform: translateX(100%);

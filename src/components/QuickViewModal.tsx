@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { X, ShoppingBag, Check, ArrowRight } from 'lucide-react'
 import { useCart } from '@/context/CartContext'
 import Link from 'next/link'
+import { proxyImageUrl } from '@/lib/supabase'
 
 interface QuickViewProps {
     producto: any
@@ -44,7 +45,7 @@ export default function QuickViewModal({ producto, isOpen, onClose }: QuickViewP
             id_producto: producto.id,
             nombre: producto.nombre,
             precio_unitario: producto.precio,
-            imagen: producto.url_imagen,
+            imagen: producto.url_imagen, // Aquí se guarda la original si se quiere (o la versión proxy si prefieren)
             tipo_curva: selectedCurva as any,
             cantidad_pares: cantidadPares,
             color: selectedColor,
@@ -83,7 +84,7 @@ export default function QuickViewModal({ producto, isOpen, onClose }: QuickViewP
                 {/* Columna Izquierda: Imagen */}
                 <div className="w-full md:w-1/2 bg-slate-50 relative flex items-center justify-center p-8">
                     <img
-                        src={producto.url_imagen}
+                        src={proxyImageUrl(producto.url_imagen)}
                         alt={producto.nombre}
                         className="w-full h-full object-contain mix-blend-multiply max-h-[300px] md:max-h-[400px]"
                     />

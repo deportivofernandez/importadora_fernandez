@@ -4,242 +4,182 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import ProductCard from '@/components/ProductCard'
 import QuickViewModal from '@/components/QuickViewModal'
-import { Filter, X, SlidersHorizontal, ChevronDown, ChevronUp } from 'lucide-react'
+import { SlidersHorizontal, ChevronDown, X } from 'lucide-react'
 
 interface CatalogViewProps {
     initialProducts: any[]
 }
 
-const CATEGORIAS = [
-    { label: 'Adultos', value: 'adulto' },
-    { label: 'Niños', value: 'nino' },
-    { label: 'Deportivos', value: 'deportivo' },
+const FILTROS = [
+    { label: 'Todo', value: '' },
+    { label: 'Adulto', value: 'adulto' },
+    { label: 'Niño', value: 'nino' },
+    { label: 'Deportivo', value: 'deportivo' },
+    { label: 'Casual', value: 'casual' },
+    { label: 'Formal', value: 'formal' },
     { label: 'Botas', value: 'botas' },
     { label: 'Sandalias', value: 'sandalias' },
-    { label: 'Formales', value: 'formales' },
-    { label: 'Casuales', value: 'casuales' }
 ]
 
 export default function CatalogView({ initialProducts }: CatalogViewProps) {
-    // Filtros
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-    const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000])
+    const [activeFilter, setActiveFilter] = useState('')
     const [sortBy, setSortBy] = useState('recientes')
-    const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
+    const [showSortMenu, setShowSortMenu] = useState(false)
+    const [priceMax, setPriceMax] = useState(1000)
+    const [showPriceFilter, setShowPriceFilter] = useState(false)
 
-    // Estados Quick View
     const [quickViewProduct, setQuickViewProduct] = useState<any>(null)
     const [isQuickViewOpen, setIsQuickViewOpen] = useState(false)
 
-    // Expandir/Colapsar secciones
-    const [isCatOpen, setIsCatOpen] = useState(true)
-    const [isPriceOpen, setIsPriceOpen] = useState(true)
-
-    // Lógica de Filtrado
     const filteredProducts = useMemo(() => {
         let result = [...initialProducts]
 
-        // 1. Categoría
-        if (selectedCategories.length > 0) {
-            result = result.filter(p => selectedCategories.some(cat => p.categoria.toLowerCase().includes(cat.toLowerCase())))
+        if (activeFilter) {
+            const af = activeFilter.toLowerCase();
+            result = result.filter(p =>
+                (p.categoria && p.categoria.toLowerCase().includes(af)) ||
+                (p.nombre && p.nombre.toLowerCase().includes(af)) ||
+                (p.genero && p.genero.toLowerCase().includes(af)) ||
+                (p.grupo_talla && p.grupo_talla.toLowerCase().includes(af)) ||
+                (p.etiquetas && Array.isArray(p.etiquetas) && p.etiquetas.some((e: string) => e.toLowerCase().includes(af))) ||
+                (p.subcategoria && p.subcategoria.toLowerCase().includes(af))
+            )
         }
 
-        // 2. Precio
-        result = result.filter(p => p.precio >= priceRange[0] && p.precio <= priceRange[1])
+        result = result.filter(p => p.precio <= priceMax)
 
-        // 3. Ordenamiento
-        if (sortBy === 'precio_asc') {
-            result.sort((a, b) => a.precio - b.precio)
-        } else if (sortBy === 'precio_desc') {
-            result.sort((a, b) => b.precio - a.precio)
-        }
-        // 'recientes' ya viene ordenado del servidor por fecha descendente
+        if (sortBy === 'precio_asc') result.sort((a, b) => a.precio - b.precio)
+        else if (sortBy === 'precio_desc') result.sort((a, b) => b.precio - a.precio)
 
         return result
-    }, [initialProducts, selectedCategories, priceRange, sortBy])
+    }, [initialProducts, activeFilter, sortBy, priceMax])
 
-    const toggleCategory = (cat: string) => {
-        setSelectedCategories(prev =>
-            prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat]
-        )
+    const sortLabels: Record<string, string> = {
+        recientes: 'Más Recientes',
+        precio_asc: 'Menor Precio',
+        precio_desc: 'Mayor Precio',
     }
 
-    const clearFilters = () => {
-        setSelectedCategories([])
-        setPriceRange([0, 1000])
-        setSortBy('recientes')
-    }
+    const hasFilters = activeFilter !== '' || priceMax < 1000
 
     return (
         <section className="max-w-7xl mx-auto px-4 py-8">
-            <div className="flex flex-col lg:flex-row gap-8">
 
-                {/* Mobile Filter Trigger */}
-                <button
-                    onClick={() => setIsMobileFilterOpen(true)}
-                    className="lg:hidden w-full flex items-center justify-center gap-2 bg-white border border-slate-200 p-3 rounded-xl font-bold text-slate-700 shadow-sm"
-                >
-                    <SlidersHorizontal size={18} /> Filtros y Ordenar
-                </button>
+            {/* ── HEADER ─────────────────────────────────────────── */}
+            <div className="mb-8">
+                <p className="text-white/40 text-xs font-semibold tracking-[0.3em] uppercase mb-1">Importadora Fernández</p>
+                <h1 className="text-4xl md:text-5xl font-black text-white mb-6">Catálogo</h1>
 
-                {/* Sidebar Filtros (Desktop: Static | Mobile: Fixed Overlay) */}
-                <aside className={`
-                    fixed inset-0 z-50 bg-white lg:bg-transparent lg:static lg:z-auto lg:w-64 lg:block
-                    transition-transform duration-300 ease-in-out
-                    ${isMobileFilterOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-                    overflow-y-auto
-                `}>
-                    <div className="p-6 lg:p-0">
-                        <div className="flex justify-between items-center lg:hidden mb-6">
-                            <h2 className="text-xl font-bold">Filtros</h2>
-                            <button onClick={() => setIsMobileFilterOpen(false)}><X size={24} /></button>
-                        </div>
-
-                        {/* Contenedor de Filtros (Sticky en Desktop) */}
-                        <div className="lg:sticky lg:top-24 space-y-6">
-
-                            {/* Header Filtros Desktop */}
-                            <div className="hidden lg:flex justify-between items-center mb-4">
-                                <h3 className="font-bold text-lg flex items-center gap-2">
-                                    <Filter size={20} /> Filtros
-                                </h3>
-                                {(selectedCategories.length > 0 || priceRange[0] > 0 || priceRange[1] < 1000) && (
-                                    <button
-                                        onClick={clearFilters}
-                                        className="text-xs text-red-500 font-bold hover:underline"
-                                    >
-                                        Limpiar
-                                    </button>
-                                )}
-                            </div>
-
-                            {/* Filtro Categorías */}
-                            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                                <button
-                                    className="w-full flex justify-between items-center mb-3 font-bold text-slate-800"
-                                    onClick={() => setIsCatOpen(!isCatOpen)}
-                                >
-                                    Categorías
-                                    {isCatOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                                </button>
-
-                                {isCatOpen && (
-                                    <div className="space-y-2 animate-fade-in">
-                                        {CATEGORIAS.map(cat => (
-                                            <label key={cat.value} className="flex items-center gap-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded-lg transition-colors">
-                                                <div className="relative flex items-center">
-                                                    <input
-                                                        type="checkbox"
-                                                        className="peer h-5 w-5 border-2 border-slate-300 rounded checked:bg-orange-500 checked:border-orange-500 focus:ring-orange-200 transition-all cursor-pointer appearance-none"
-                                                        checked={selectedCategories.includes(cat.value)}
-                                                        onChange={() => toggleCategory(cat.value)}
-                                                    />
-                                                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100 pointer-events-none">
-                                                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M10 3L4.5 8.5L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                                                    </div>
-                                                </div>
-                                                <span className={`text-sm ${selectedCategories.includes(cat.value) ? 'font-bold text-slate-800' : 'text-slate-600'}`}>
-                                                    {cat.label}
-                                                </span>
-                                            </label>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Filtro Precio */}
-                            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                                <button
-                                    className="w-full flex justify-between items-center mb-3 font-bold text-slate-800"
-                                    onClick={() => setIsPriceOpen(!isPriceOpen)}
-                                >
-                                    Precio (Bs)
-                                    {isPriceOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                                </button>
-
-                                {isPriceOpen && (
-                                    <div className="space-y-4 animate-fade-in">
-                                        <div className="flex items-center gap-2">
-                                            <div className="relative flex-1">
-                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">Bs</span>
-                                                <input
-                                                    type="number"
-                                                    value={priceRange[0]}
-                                                    onChange={(e) => setPriceRange([Number(e.target.value), priceRange[1]])}
-                                                    className="w-full pl-8 pr-2 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
-                                                />
-                                            </div>
-                                            <span className="text-slate-400 font-bold">-</span>
-                                            <div className="relative flex-1">
-                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">Bs</span>
-                                                <input
-                                                    type="number"
-                                                    value={priceRange[1]}
-                                                    onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
-                                                    className="w-full pl-8 pr-2 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </aside>
-
-                {/* Main Content */}
-                <div className="flex-1">
-                    {/* Header Resultados y Ordenar */}
-                    <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-                        <h2 className="text-xl font-bold text-slate-900">
-                            Resultados <span className="text-slate-400 font-normal">({filteredProducts.length})</span>
-                        </h2>
-
-                        <div className="flex items-center gap-2 w-full sm:w-auto">
-                            <span className="text-sm font-medium text-slate-500 hidden sm:block">Ordenar:</span>
-                            <select
-                                value={sortBy}
-                                onChange={(e) => setSortBy(e.target.value)}
-                                className="w-full sm:w-auto px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none cursor-pointer"
-                            >
-                                <option value="recientes">Más Recientes</option>
-                                <option value="precio_asc">Precio: Menor a Mayor</option>
-                                <option value="precio_desc">Precio: Mayor a Menor</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    {/* Grid de Productos */}
-                    {filteredProducts.length > 0 ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
-                            {filteredProducts.map((zapato) => (
-                                <ProductCard
-                                    key={zapato.id}
-                                    zapato={zapato}
-                                    onQuickView={(p) => {
-                                        setQuickViewProduct(p)
-                                        setIsQuickViewOpen(true)
-                                    }}
-                                />
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-slate-100 shadow-sm">
-                            <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-                                <Filter className="text-slate-300" size={32} />
-                            </div>
-                            <h3 className="text-lg font-bold text-slate-800">No encontramos resultados</h3>
-                            <p className="text-slate-500 mb-6 text-sm">Prueba ajustando los filtros de búsqueda</p>
+                {/* Controles en una fila */}
+                <div className="flex flex-wrap items-center gap-3">
+                    {/* Pills de filtro */}
+                    <div className="flex flex-wrap items-center gap-2 flex-1">
+                        {FILTROS.map(f => (
                             <button
-                                onClick={clearFilters}
-                                className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-bold transition-all shadow-lg hover:shadow-orange-500/30"
+                                key={f.value}
+                                onClick={() => setActiveFilter(f.value)}
+                                className={`px-5 py-2 rounded-full text-sm font-bold transition-all ${activeFilter === f.value
+                                    ? 'bg-white text-navy-600 shadow-lg'
+                                    : 'bg-white/8 border border-white/10 text-white/60 hover:bg-white/15 hover:text-white'
+                                    }`}
                             >
-                                Limpiar Filtros
+                                {f.label}
                             </button>
-                        </div>
+                        ))}
+                    </div>
+
+                    {/* Ordenar */}
+                    <div className="relative">
+                        <button
+                            onClick={() => { setShowSortMenu(!showSortMenu); setShowPriceFilter(false) }}
+                            className="flex items-center gap-2 bg-white/8 border border-white/10 text-white/70 px-4 py-2 rounded-full text-sm font-semibold hover:bg-white/15 transition"
+                        >
+                            <SlidersHorizontal size={14} />
+                            {sortLabels[sortBy]}
+                            <ChevronDown size={13} className={`transition-transform ${showSortMenu ? 'rotate-180' : ''}`} />
+                        </button>
+                        {showSortMenu && (
+                            <div className="absolute right-0 top-[calc(100%+8px)] bg-navy-700 border border-white/10 rounded-2xl shadow-2xl shadow-black/40 overflow-hidden z-30 min-w-[170px]">
+                                {Object.entries(sortLabels).map(([val, label]) => (
+                                    <button key={val} onClick={() => { setSortBy(val); setShowSortMenu(false) }}
+                                        className={`w-full text-left px-5 py-3 text-sm transition hover:bg-white/10 ${sortBy === val ? 'text-white font-bold' : 'text-white/60'}`}>
+                                        {label}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Filtro precio */}
+                    <div className="relative">
+                        <button
+                            onClick={() => { setShowPriceFilter(!showPriceFilter); setShowSortMenu(false) }}
+                            className={`flex items-center gap-2 border px-4 py-2 rounded-full text-sm font-semibold transition ${priceMax < 1000 ? 'bg-white text-navy-600 border-white' : 'bg-white/8 border-white/10 text-white/70 hover:bg-white/15'}`}
+                        >
+                            Bs máx: {priceMax}
+                        </button>
+                        {showPriceFilter && (
+                            <div className="absolute right-0 top-[calc(100%+8px)] bg-navy-700 border border-white/10 rounded-2xl shadow-2xl shadow-black/40 z-30 p-5 min-w-[220px]">
+                                <label className="text-white/50 text-xs uppercase tracking-widest font-bold block mb-3">Precio máximo (Bs)</label>
+                                <input type="range" min={50} max={1000} step={50} value={priceMax}
+                                    onChange={e => setPriceMax(Number(e.target.value))}
+                                    className="w-full accent-white mb-2" />
+                                <div className="flex justify-between text-white/40 text-xs">
+                                    <span>Bs 50</span>
+                                    <span className="text-white font-bold">Bs {priceMax}</span>
+                                    <span>Bs 1000</span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Limpiar filtros */}
+                    {hasFilters && (
+                        <button onClick={() => { setActiveFilter(''); setPriceMax(1000) }}
+                            className="flex items-center gap-1.5 text-white/40 hover:text-white/70 text-sm transition">
+                            <X size={14} /> Limpiar
+                        </button>
                     )}
                 </div>
+
+                {/* Contador */}
+                <p className="text-white/30 text-sm mt-4">
+                    {filteredProducts.length} {filteredProducts.length === 1 ? 'modelo' : 'modelos'} disponibles
+                </p>
             </div>
+
+            {/* Cerrar menús al hacer click fuera */}
+            {(showSortMenu || showPriceFilter) && (
+                <div className="fixed inset-0 z-20" onClick={() => { setShowSortMenu(false); setShowPriceFilter(false) }} />
+            )}
+
+            {/* ── GRID DE PRODUCTOS ──────────────────────────────── */}
+            {filteredProducts.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                    {filteredProducts.map((zapato) => (
+                        <ProductCard
+                            key={zapato.id}
+                            zapato={zapato}
+                            onQuickView={(p) => {
+                                setQuickViewProduct(p)
+                                setIsQuickViewOpen(true)
+                            }}
+                        />
+                    ))}
+                </div>
+            ) : (
+                <div className="flex flex-col items-center justify-center py-24 text-white/30 gap-4">
+                    <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-2">
+                        <SlidersHorizontal size={28} className="text-white/20" />
+                    </div>
+                    <h3 className="text-white/50 font-bold text-lg">Sin resultados</h3>
+                    <p className="text-sm">Ajusta los filtros para ver más modelos</p>
+                    <button onClick={() => { setActiveFilter(''); setPriceMax(1000) }}
+                        className="mt-2 px-6 py-2.5 bg-white text-navy-600 font-bold rounded-full text-sm hover:bg-white/90 transition">
+                        Ver todo el catálogo
+                    </button>
+                </div>
+            )}
 
             {/* Quick View Modal */}
             <QuickViewModal

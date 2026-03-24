@@ -3,6 +3,8 @@
 import { useCart } from '@/context/CartContext'
 import Link from 'next/link'
 import { Trash2, MessageCircle, ArrowLeft, Package, ShoppingBag, ArrowRight } from 'lucide-react'
+import { proxyImageUrl } from '@/lib/supabase'
+import Navbar from '@/components/Navbar'
 
 // Número de WhatsApp para recibir pedidos
 const WHATSAPP_NUMBER = '59178303866'
@@ -61,24 +63,30 @@ export default function CarritoPage() {
 
     if (items.length === 0) {
         return (
-            <div className="min-h-screen bg-slate-50 pt-24 pb-12 flex flex-col items-center justify-center text-center px-4">
-                <div className="w-24 h-24 bg-orange-100/50 rounded-full flex items-center justify-center mb-6">
-                    <ShoppingBag size={48} className="text-orange-300" />
+            <div className="min-h-screen bg-slate-50 flex flex-col items-center text-center">
+                <div className="fixed top-0 left-0 right-0 z-50">
+                    <Navbar />
                 </div>
-                <h1 className="text-2xl font-bold text-slate-800 mb-2">Tu pedido está vacío</h1>
-                <p className="text-slate-500 mb-8 max-w-sm">Aún no has agregado ninguna caja de zapatos a tu pedido mayorista.</p>
-                <Link href="/catalogo">
-                    <button className="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-all flex items-center gap-2">
-                        <ArrowLeft size={20} /> Ir al Catálogo
-                    </button>
-                </Link>
+                <div className="pt-32 pb-12 px-4 flex flex-col items-center justify-center w-full grow">
+                    <div className="w-24 h-24 bg-orange-100/50 rounded-full flex items-center justify-center mb-6 mt-10">
+                        <ShoppingBag size={48} className="text-orange-300" />
+                    </div>
+                    <h1 className="text-2xl font-bold text-slate-800 mb-2">Tu pedido está vacío</h1>
+                    <p className="text-slate-500 mb-8 max-w-sm">Aún no has agregado ninguna caja de zapatos a tu pedido mayorista.</p>
+                    <Link href="/catalogo">
+                        <button className="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-all flex items-center gap-2">
+                            <ArrowLeft size={20} /> Ir al Catálogo
+                        </button>
+                    </Link>
+                </div>
             </div>
         )
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 pt-28 pb-12">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        <div className="min-h-screen bg-slate-50">
+            <Navbar />
+            <div className="pt-8 pb-12 max-w-4xl mx-auto px-4 sm:px-6">
 
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
@@ -98,7 +106,7 @@ export default function CarritoPage() {
                         {items.map((item, index) => (
                             <div key={index} className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex gap-4 transition-all hover:shadow-md">
                                 <div className="w-24 h-24 bg-slate-50 rounded-xl overflow-hidden flex-shrink-0 border border-slate-100">
-                                    <img src={item.imagen} alt={item.nombre} className="w-full h-full object-contain mix-blend-multiply" />
+                                    <img src={proxyImageUrl(item.imagen)} alt={item.nombre} className="w-full h-full object-contain mix-blend-multiply" />
                                 </div>
                                 <div className="flex-1 flex flex-col justify-between">
                                     <div>

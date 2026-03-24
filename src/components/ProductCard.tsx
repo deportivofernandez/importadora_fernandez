@@ -2,19 +2,15 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Link as LinkIcon, Eye, Heart, ShoppingBag } from 'lucide-react'
+import { Heart, ArrowRight, Globe } from 'lucide-react'
 import { useFavorites } from '@/context/FavoritesContext'
+import { proxyImageUrl } from '@/lib/supabase'
 
 export default function ProductCard({ zapato, onQuickView }: { zapato: any, onQuickView?: (product: any) => void }) {
     const [isHovered, setIsHovered] = useState(false)
+    const [activeColor, setActiveColor] = useState(0)
     const { toggleFavorite, isFavorite } = useFavorites()
     const liked = isFavorite(zapato.id)
-
-    const handleQuickView = (e: React.MouseEvent) => {
-        e.preventDefault() // Evitar ir al link
-        e.stopPropagation()
-        if (onQuickView) onQuickView(zapato)
-    }
 
     const handleLike = (e: React.MouseEvent) => {
         e.preventDefault()
@@ -29,122 +25,104 @@ export default function ProductCard({ zapato, onQuickView }: { zapato: any, onQu
         })
     }
 
-    // Colores de ejemplo si no hay en la BD
-    const colores = zapato.colores || ['#000000', '#FFFFFF', '#1E40AF', '#DC2626']
+    const colores: any[] = zapato.colores || []
+    const getHex = (c: any) => typeof c === 'string' ? c : (c?.hex || '#CCCCCC')
+    const getImg = (c: any) => typeof c === 'object' ? (c?.imagen_url || null) : null
+    const activeImg = colores[activeColor] ? (getImg(colores[activeColor]) || zapato.url_imagen) : zapato.url_imagen
 
     return (
         <Link href={`/producto/${zapato.id}`} className="group block">
             <div
-                className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 relative border border-slate-100 h-full flex flex-col"
+                className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 relative flex flex-col"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
-                {/* Imagen */}
-                <div className="relative h-64 overflow-hidden bg-slate-50 flex items-center justify-center p-6">
-                    <div className={`absolute inset-0 bg-gradient-to-t from-black/5 to-transparent transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}></div>
-
-                    {/* Imagen Principal */}
-                    <img
-                        src={zapato.url_imagen}
-                        alt={zapato.nombre}
-                        className={`absolute inset-0 w-full h-full object-contain mix-blend-multiply p-6 transition-all duration-700 ease-out ${isHovered && zapato.imagen_hover ? 'opacity-0' : 'opacity-100 scale-100'} ${isHovered && !zapato.imagen_hover ? 'scale-110' : ''}`}
-                    />
-
-                    {/* Imagen Secundaria (Hover) - Solo si existe */}
-                    {zapato.imagen_hover && (
-                        <img
-                            src={zapato.imagen_hover}
-                            alt={`${zapato.nombre} vista 2`}
-                            className={`absolute inset-0 w-full h-full object-contain mix-blend-multiply p-6 transition-all duration-700 ease-out ${isHovered ? 'opacity-100 scale-110' : 'opacity-0 scale-95'}`}
-                        />
-                    )}
+                {/* ── IMAGEN ────────────────────────────────────── */}
+                <div className="relative bg-slate-50 overflow-hidden" style={{ aspectRatio: '4/5' }}>
 
                     {/* Badges */}
-                    <div className="absolute top-4 left-4 flex flex-col gap-2">
+                    <div className="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1.5">
                         {zapato.etiquetas?.includes('nuevo') && (
-                            <span className="bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
-                                Nuevo
+                            <span className="bg-[#1B2436] text-white text-[8px] font-black px-2 py-0.5 rounded-sm uppercase tracking-[0.2em]">
+                                NEW
                             </span>
                         )}
-                        {/* Badge de Origen (Solo si es importado para destacar) */}
                         {zapato.origen && zapato.origen !== 'Nacional' && (
-                            <span className="bg-slate-900 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md flex items-center gap-1">
-                                <span className="text-sm">{zapato.origen === 'Brazilero' ? '🇧🇷' : '🇵🇪'}</span>
+                            <span className="bg-[#1B2436]/80 backdrop-blur-sm text-white text-[8px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest flex items-center gap-0.5">
+                                <Globe size={7} />
                                 {zapato.origen}
-                            </span>
-                        )}
-                        {!zapato.disponible && (
-                            <span className="bg-red-500 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
-                                Agotado
-                            </span>
-                        )}
-                        {/* Badge de Oferta (simulado si precio es bajo o tiene tag) */}
-                        {zapato.precio < 150 && (
-                            <span className="bg-orange-500 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
-                                Oferta
                             </span>
                         )}
                     </div>
 
-                    {/* Acciones Rápidas (Overlay) */}
-                    <div className={`absolute bottom-4 left-0 right-0 flex justify-center gap-3 transition-all duration-300 ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+                    {/* Corazón */}
+                    <button
+                        onClick={handleLike}
+                        className={`absolute top-2.5 right-2.5 z-10 w-7 h-7 rounded-full flex items-center justify-center transition-all border ${liked
+                            ? 'bg-red-50 border-red-200 text-red-500'
+                            : 'bg-white/80 border-slate-200 text-slate-300 hover:text-red-400'
+                            }`}
+                    >
+                        <Heart size={13} className={liked ? 'fill-current' : ''} />
+                    </button>
+
+                    {/* Imagen — ocupa todo el espacio sin padding perdido */}
+                    <img
+                        src={proxyImageUrl(isHovered && zapato.imagen_hover ? zapato.imagen_hover : (activeImg || zapato.url_imagen))}
+                        alt={zapato.nombre}
+                        className={`w-full h-full object-contain transition-transform duration-500 ${isHovered ? 'scale-108' : 'scale-100'}`}
+                        style={{ padding: '12px' }}
+                    />
+
+                    {/* Overlay consultar al hacer hover */}
+                    <div className={`absolute inset-x-0 bottom-0 flex justify-center pb-3 transition-all duration-300 ${isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
                         <button
-                            onClick={handleQuickView}
-                            className="bg-brand-black text-neon-500 p-3 rounded-full shadow-lg hover:bg-neon-500 hover:text-brand-black transition-colors flex items-center justify-center group/btn border border-neon-500/50"
-                            title="Vista Rápida"
+                            onClick={(e) => { e.preventDefault(); if (onQuickView) onQuickView(zapato) }}
+                            className="flex items-center gap-1.5 bg-[#1B2436] text-white px-5 py-2 rounded-xl text-xs font-bold shadow-lg"
                         >
-                            <Eye size={20} />
+                            Consultar <ArrowRight size={12} />
                         </button>
                     </div>
                 </div>
 
-                {/* Info */}
-                <div className="p-5 flex flex-col flex-grow">
-                    <div className="mb-2">
-                        <span className="text-xs uppercase tracking-wider text-slate-400 font-bold">{zapato.categoria}</span>
-                    </div>
-                    <h3 className="text-lg font-bold text-slate-800 mb-1 leading-tight group-hover:text-neon-600 transition-colors line-clamp-2">
-                        {zapato.nombre}
-                    </h3>
+                {/* ── INFO ──────────────────────────────────────── */}
+                <div className="px-3 pt-2.5 pb-3 flex flex-col gap-1.5">
 
-                    <div className="flex items-center gap-2 mb-4">
-                        {/* Puntos de colores */}
-                        <div className="flex -space-x-1.5 overflow-hidden p-1">
-                            {colores.slice(0, 3).map((color: string, i: number) => (
-                                <div key={i} className="inline-block h-4 w-4 rounded-full ring-2 ring-white" style={{ backgroundColor: color }}></div>
-                            ))}
-                            {colores.length > 3 && (
-                                <div className="inline-block h-4 w-4 rounded-full bg-slate-100 ring-2 ring-white flex items-center justify-center text-[8px] font-bold text-slate-500">+{colores.length - 3}</div>
-                            )}
+                    {/* Swatches */}
+                    {colores.length > 0 && (
+                        <div className="flex items-center gap-1">
+                            {colores.slice(0, 6).map((color: any, i: number) => {
+                                const img = getImg(color)
+                                return img ? (
+                                    <button key={i} onClick={(e) => { e.preventDefault(); setActiveColor(i) }}
+                                        className={`w-6 h-6 rounded-md overflow-hidden border-2 transition-all flex-shrink-0 ${activeColor === i ? 'border-[#1B2436] scale-110' : 'border-transparent hover:border-slate-300'}`}>
+                                        <img src={proxyImageUrl(img)} alt="" className="w-full h-full object-cover" />
+                                    </button>
+                                ) : (
+                                    <button key={i} onClick={(e) => { e.preventDefault(); setActiveColor(i) }}
+                                        className={`w-4 h-4 rounded-full border-2 transition-all flex-shrink-0 ${activeColor === i ? 'border-[#1B2436] scale-125' : 'border-white ring-1 ring-slate-200'}`}
+                                        style={{ backgroundColor: getHex(color) }} />
+                                )
+                            })}
+                            {colores.length > 6 && <span className="text-[9px] text-slate-400">+{colores.length - 6}</span>}
                         </div>
-                    </div>
+                    )}
 
-                    <div className="mt-auto flex items-end justify-between border-t border-slate-50 pt-4">
-                        <div className="flex flex-col">
-                            <span className="text-xs text-slate-400 font-medium line-through">
-                                {zapato.precio > 200 ? `Bs ${Math.round(zapato.precio * 1.2)}` : ''}
-                            </span>
-                            <span className="text-xl font-black text-slate-900">
-                                Bs {zapato.precio}
-                            </span>
+                    <p className="text-[9px] uppercase tracking-[0.2em] text-slate-400 font-bold leading-none">{zapato.categoria}</p>
+                    <h3 className="text-sm font-bold text-slate-800 leading-snug line-clamp-2">{zapato.nombre}</h3>
+
+                    {/* Precio */}
+                    <div className="flex items-center justify-between mt-0.5">
+                        <div>
+                            <p className="text-base font-black text-[#1B2436] leading-none">Bs {zapato.precio}</p>
+                            <span className="text-[9px] text-slate-300 font-medium">por par</span>
                         </div>
-
-                        {/* Botón Detalles Real */}
-                        <div className="flex gap-2">
-                            <button
-                                onClick={handleLike}
-                                className={`p-3 rounded-full hover:bg-slate-50 transition-colors shadow-sm ${liked ? 'bg-red-50 text-red-500' : 'bg-white text-slate-400 hover:text-red-400'}`}
-                                title={liked ? "Quitar de favoritos" : "Guardar en favoritos"}
-                            >
-                                <Heart size={20} className={liked ? "fill-current" : ""} />
-                            </button>
-
-                            <span
-                                className={`p-3 rounded-full bg-brand-black text-neon-500 border border-neon-500 shadow-lg transition-transform duration-300 flex items-center justify-center ${isHovered ? 'scale-110 rotate-3 bg-neon-500 text-brand-black' : ''}`}
-                            >
-                                <ShoppingBag size={20} />
-                            </span>
-                        </div>
+                        <button
+                            onClick={(e) => { e.preventDefault(); if (onQuickView) onQuickView(zapato) }}
+                            className="w-8 h-8 bg-[#1B2436] text-white rounded-xl flex items-center justify-center hover:bg-[#243050] transition-colors"
+                        >
+                            <ArrowRight size={14} />
+                        </button>
                     </div>
                 </div>
             </div>
