@@ -25,7 +25,7 @@ export default function CatalogView({ initialProducts }: CatalogViewProps) {
     const [activeFilter, setActiveFilter] = useState('')
     const [sortBy, setSortBy] = useState('recientes')
     const [showSortMenu, setShowSortMenu] = useState(false)
-    const [priceMax, setPriceMax] = useState(1000)
+    const [priceMax, setPriceMax] = useState(99999)
     const [showPriceFilter, setShowPriceFilter] = useState(false)
 
     const [quickViewProduct, setQuickViewProduct] = useState<any>(null)
@@ -35,18 +35,22 @@ export default function CatalogView({ initialProducts }: CatalogViewProps) {
         let result = [...initialProducts]
 
         if (activeFilter) {
-            const af = activeFilter.toLowerCase();
+            // Normalizar: quitar tildes y pasar a minúsculas para comparación robusta
+            const normalize = (s: string) => s.toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            const af = normalize(activeFilter)
             result = result.filter(p =>
-                (p.categoria && p.categoria.toLowerCase().includes(af)) ||
-                (p.nombre && p.nombre.toLowerCase().includes(af)) ||
-                (p.genero && p.genero.toLowerCase().includes(af)) ||
-                (p.grupo_talla && p.grupo_talla.toLowerCase().includes(af)) ||
-                (p.etiquetas && Array.isArray(p.etiquetas) && p.etiquetas.some((e: string) => e.toLowerCase().includes(af))) ||
-                (p.subcategoria && p.subcategoria.toLowerCase().includes(af))
+                (p.categoria && normalize(p.categoria).includes(af)) ||
+                (p.nombre && normalize(p.nombre).includes(af)) ||
+                (p.genero && normalize(p.genero).includes(af)) ||
+                (p.grupo_talla && normalize(p.grupo_talla).includes(af)) ||
+                (p.etiquetas && Array.isArray(p.etiquetas) && p.etiquetas.some((e: string) => normalize(e).includes(af))) ||
+                (p.subcategoria && normalize(p.subcategoria).includes(af))
             )
         }
 
-        result = result.filter(p => p.precio <= priceMax)
+        // Solo aplicar filtro de precio si el usuario lo modificó
+        if (priceMax < 99999) result = result.filter(p => p.precio <= priceMax)
 
         if (sortBy === 'precio_asc') result.sort((a, b) => a.precio - b.precio)
         else if (sortBy === 'precio_desc') result.sort((a, b) => b.precio - a.precio)
@@ -60,7 +64,7 @@ export default function CatalogView({ initialProducts }: CatalogViewProps) {
         precio_desc: 'Mayor Precio',
     }
 
-    const hasFilters = activeFilter !== '' || priceMax < 1000
+    const hasFilters = activeFilter !== '' || priceMax < 99999
 
     return (
         <section className="max-w-7xl mx-auto px-4 py-8">
@@ -135,7 +139,7 @@ export default function CatalogView({ initialProducts }: CatalogViewProps) {
 
                     {/* Limpiar filtros */}
                     {hasFilters && (
-                        <button onClick={() => { setActiveFilter(''); setPriceMax(1000) }}
+                        <button onClick={() => { setActiveFilter(''); setPriceMax(99999) }}
                             className="flex items-center gap-1.5 text-white/40 hover:text-white/70 text-sm transition">
                             <X size={14} /> Limpiar
                         </button>
@@ -174,7 +178,7 @@ export default function CatalogView({ initialProducts }: CatalogViewProps) {
                     </div>
                     <h3 className="text-white/50 font-bold text-lg">Sin resultados</h3>
                     <p className="text-sm">Ajusta los filtros para ver más modelos</p>
-                    <button onClick={() => { setActiveFilter(''); setPriceMax(1000) }}
+                    <button onClick={() => { setActiveFilter(''); setPriceMax(99999) }}
                         className="mt-2 px-6 py-2.5 bg-white text-navy-600 font-bold rounded-full text-sm hover:bg-white/90 transition">
                         Ver todo el catálogo
                     </button>
