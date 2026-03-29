@@ -360,14 +360,14 @@ export default function Navbar() {
 
             {/* Mobile Menu */}
             {mobileMenuOpen && (
-                <div className="lg:hidden bg-[#0a0f14] border-t border-white/5 shadow-2xl fixed inset-0 top-[73px] bottom-[68px] z-40 overflow-y-auto w-full pb-10">
-                    <div className="px-4 py-6 space-y-1">
-                        <div className="flex items-center bg-white/5 rounded-full px-4 py-3 gap-2 border border-white/10 mb-4 focus-within:border-white/20 focus-within:bg-white/10 transition-all">
-                            <Search size={18} className="text-white/40" />
+                <div className="lg:hidden bg-[#161f2e]/95 backdrop-blur-xl border-t border-white/5 shadow-2xl fixed inset-0 top-[73px] bottom-[75px] z-40 overflow-y-auto w-full pb-10 animate-in fade-in duration-200">
+                    <div className="px-5 py-6 space-y-2">
+                        <div className="flex items-center bg-[#0d131c] rounded-2xl px-4 py-3.5 gap-3 border border-white/5 mb-6 focus-within:border-cyan-500/30 focus-within:shadow-[0_0_15px_rgba(6,182,212,0.15)] transition-all">
+                            <Search size={18} className="text-white/30" />
                             <input
                                 type="text"
                                 placeholder="Buscar modelos..."
-                                className="bg-transparent outline-none text-[15px] w-full text-white placeholder-white/30"
+                                className="bg-transparent outline-none text-[15px] w-full text-white placeholder-white/30 font-medium"
                                 onChange={(e) => {
                                     setSearchTerm(e.target.value)
                                     handleSearch(e.target.value)
@@ -377,93 +377,92 @@ export default function Navbar() {
 
                         {/* Search Results Mobile */}
                         {searchResults.length > 0 && (
-                            <div className="mb-6 bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
+                            <div className="mb-6 bg-[#0d131c] rounded-2xl border border-white/5 overflow-hidden shadow-lg">
                                 <div className="p-2">
-                                    <p className="text-[10px] font-bold text-white/30 px-3 py-2 uppercase tracking-widest">Resultados</p>
+                                    <p className="text-[10px] font-bold text-cyan-400/70 px-3 py-2 uppercase tracking-widest">Resultados</p>
                                     {searchResults.map((result) => (
                                         <Link
                                             key={result.id}
                                             href={`/producto/${result.id}`}
                                             onClick={() => setMobileMenuOpen(false)}
-                                            className="flex items-center gap-4 p-3 hover:bg-white/10 rounded-xl transition-colors group"
+                                            className="flex items-center gap-4 p-3 hover:bg-white/5 rounded-xl transition-colors group"
                                         >
-                                            <img src={proxyImageUrl(result.url_imagen)} alt={result.nombre} className="w-12 h-12 object-contain bg-white/5 rounded-xl border border-white/10" />
+                                            <img src={proxyImageUrl(result.url_imagen)} alt={result.nombre} className="w-12 h-12 object-contain bg-white/5 rounded-xl border border-white/5" />
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-[15px] font-bold text-white truncate">{result.nombre}</p>
+                                                <p className="text-[14px] font-bold text-white truncate">{result.nombre}</p>
                                                 <p className="text-xs text-white/40">{result.categoria}</p>
                                             </div>
-                                            <span className="text-sm font-bold text-green-400">Bs {result.precio}</span>
+                                            <span className="text-sm font-bold text-cyan-400">Bs {result.precio}</span>
                                         </Link>
                                     ))}
                                 </div>
                             </div>
                         )}
 
-                        <div className="space-y-2">
-                            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 py-3.5 px-4 text-white/80 hover:text-white hover:bg-white/5 rounded-2xl text-[16px] font-medium transition-all">
-                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 text-white/60"><Home size={20} /></div>
+                        <div className="space-y-1">
+                            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 py-4 px-4 text-white/70 hover:text-white hover:bg-white/5 rounded-2xl text-[16px] font-medium transition-all group">
+                                <div className="w-11 h-11 rounded-2xl bg-[#0d131c] flex items-center justify-center flex-shrink-0 text-white/40 group-hover:text-cyan-400 group-hover:scale-110 transition-all border border-white/5 shadow-sm"><Home size={20} /></div>
                                 Inicio
                             </Link>
-                            <Link href="/catalogo" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 py-3.5 px-4 text-white/80 hover:text-white hover:bg-white/5 rounded-2xl text-[16px] font-medium transition-all">
-                                <div className="w-10 h-10 rounded-full bg-[#1A2634] flex items-center justify-center flex-shrink-0 text-blue-400"><LayoutGrid size={20} /></div>
+                            <Link href="/catalogo" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 py-4 px-4 text-white/70 hover:text-white hover:bg-white/5 rounded-2xl text-[16px] font-medium transition-all group">
+                                <div className="w-11 h-11 rounded-2xl bg-[#0d131c] flex items-center justify-center flex-shrink-0 text-white/40 group-hover:text-blue-400 group-hover:scale-110 transition-all border border-white/5 shadow-sm"><LayoutGrid size={20} /></div>
                                 Catálogo Completo
                             </Link>
-                            <Link href="/nuevos" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 py-3.5 px-4 text-white/80 hover:text-white hover:bg-white/5 rounded-2xl text-[16px] font-medium transition-all">
-                                <div className="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center flex-shrink-0 text-indigo-400"><Sparkles size={20} /></div>
+                            <Link href="/nuevos" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 py-4 px-4 text-white/70 hover:text-white hover:bg-white/5 rounded-2xl text-[16px] font-medium transition-all group">
+                                <div className="w-11 h-11 rounded-2xl bg-[#0d131c] flex items-center justify-center flex-shrink-0 text-white/40 group-hover:text-indigo-400 group-hover:scale-110 transition-all border border-white/5 shadow-sm"><Sparkles size={20} /></div>
                                 Nuevos Ingresos
                             </Link>
-                            <Link href="/ofertas" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 py-3.5 px-4 text-white/80 hover:text-white hover:bg-white/5 rounded-2xl text-[16px] font-medium transition-all">
-                                <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0 text-red-400"><Tag size={20} /></div>
+                            <Link href="/ofertas" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 py-4 px-4 text-white/70 hover:text-white hover:bg-white/5 rounded-2xl text-[16px] font-medium transition-all group">
+                                <div className="w-11 h-11 rounded-2xl bg-[#0d131c] flex items-center justify-center flex-shrink-0 text-white/40 group-hover:text-rose-400 group-hover:scale-110 transition-all border border-white/5 shadow-sm"><Tag size={20} /></div>
                                 Ofertas
                             </Link>
-                            {/* Opciones de usuario eliminadas para evitar duplicidad con el icono de perfil superior */}
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Bottom Navigation for Mobile (WhatsApp style) */}
-            <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0B141A] text-white/50 border-t border-white/5 pb-2 pt-1.5 shadow-[0_-4px_25px_rgba(0,0,0,0.5)]">
-                <div className="flex items-center justify-around h-[56px] px-1">
+            {/* Bottom Navigation for Mobile (Modern Elegant Style) */}
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0d131c]/90 backdrop-blur-xl border-t border-white/5 pb-6 pt-3 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+                <div className="flex items-center justify-around h-[48px] px-2 max-w-sm mx-auto">
                     {/* Item: Inicio */}
-                    <Link href="/" onClick={() => setMobileMenuOpen(false)} className={`flex flex-col items-center justify-center w-full h-full gap-[3px] transition-colors ${pathname === '/' && !mobileMenuOpen ? 'text-white' : 'hover:text-white'}`}>
-                        <div className={`flex items-center justify-center w-[60px] h-[30px] rounded-full transition-all ${pathname === '/' && !mobileMenuOpen ? 'bg-[#1e3428]' : 'bg-transparent'}`}>
-                            <Home size={22} className={pathname === '/' && !mobileMenuOpen ? 'text-[#25D366] fill-[#25D366]/20' : ''} />
+                    <Link href="/" onClick={() => setMobileMenuOpen(false)} className={`flex flex-col items-center justify-center w-full h-full gap-1.5 transition-colors ${pathname === '/' && !mobileMenuOpen ? 'text-cyan-400' : 'text-white/40 hover:text-white/80'}`}>
+                        <div className={`flex items-center justify-center w-[46px] h-[32px] rounded-2xl transition-all ${pathname === '/' && !mobileMenuOpen ? 'bg-cyan-500/10 shadow-[auto]' : 'bg-transparent'}`}>
+                            <Home size={22} className={pathname === '/' && !mobileMenuOpen ? 'stroke-[2.5px]' : ''} />
                         </div>
-                        <span className="text-[11px] font-semibold tracking-wide">Inicio</span>
+                        <span className="text-[10px] font-bold tracking-wider">Inicio</span>
                     </Link>
 
                     {/* Item: Catálogo */}
-                    <Link href="/catalogo" onClick={() => setMobileMenuOpen(false)} className={`flex flex-col items-center justify-center w-full h-full gap-[3px] transition-colors ${(pathname.includes('/catalogo') && !mobileMenuOpen) ? 'text-white' : 'hover:text-white'}`}>
-                        <div className={`flex items-center justify-center w-[60px] h-[30px] rounded-full transition-all ${(pathname.includes('/catalogo') && !mobileMenuOpen) ? 'bg-[#1e3428]' : 'bg-transparent'}`}>
-                            <LayoutGrid size={22} className={(pathname.includes('/catalogo') && !mobileMenuOpen) ? 'text-[#25D366] fill-[#25D366]/20' : ''} />
+                    <Link href="/catalogo" onClick={() => setMobileMenuOpen(false)} className={`flex flex-col items-center justify-center w-full h-full gap-1.5 transition-colors ${(pathname.includes('/catalogo') && !mobileMenuOpen) ? 'text-cyan-400' : 'text-white/40 hover:text-white/80'}`}>
+                        <div className={`flex items-center justify-center w-[46px] h-[32px] rounded-2xl transition-all ${(pathname.includes('/catalogo') && !mobileMenuOpen) ? 'bg-cyan-500/10 shadow-[auto]' : 'bg-transparent'}`}>
+                            <LayoutGrid size={22} className={(pathname.includes('/catalogo') && !mobileMenuOpen) ? 'stroke-[2.5px]' : ''} />
                         </div>
-                        <span className="text-[11px] font-semibold tracking-wide">Catálogo</span>
+                        <span className="text-[10px] font-bold tracking-wider">Catálogo</span>
                     </Link>
 
                     {/* Item: Carrito */}
-                    <Link href="/carrito" onClick={() => setMobileMenuOpen(false)} className={`relative flex flex-col items-center justify-center w-full h-full gap-[3px] transition-colors ${pathname === '/carrito' && !mobileMenuOpen ? 'text-white' : 'hover:text-white'}`}>
-                        <div className={`relative flex items-center justify-center w-[60px] h-[30px] rounded-full transition-all ${pathname === '/carrito' && !mobileMenuOpen ? 'bg-[#1e3428]' : 'bg-transparent'}`}>
-                            <ShoppingBag size={22} className={pathname === '/carrito' && !mobileMenuOpen ? 'text-[#25D366] fill-[#25D366]/20' : ''} />
+                    <Link href="/carrito" onClick={() => setMobileMenuOpen(false)} className={`relative flex flex-col items-center justify-center w-full h-full gap-1.5 transition-colors ${pathname === '/carrito' && !mobileMenuOpen ? 'text-cyan-400' : 'text-white/40 hover:text-white/80'}`}>
+                        <div className={`relative flex items-center justify-center w-[46px] h-[32px] rounded-2xl transition-all ${pathname === '/carrito' && !mobileMenuOpen ? 'bg-cyan-500/10 shadow-[auto]' : 'bg-transparent'}`}>
+                            <ShoppingBag size={22} className={pathname === '/carrito' && !mobileMenuOpen ? 'stroke-[2.5px]' : ''} />
                             {cartCount > 0 && (
-                                <span className={`absolute -top-1 right-2 ${pathname === '/carrito' && !mobileMenuOpen ? 'bg-[#25D366] text-black' : 'bg-[#25D366] text-[#0B141A]'} text-[10px] font-black w-[18px] h-[18px] flex items-center justify-center rounded-full border-2 border-[#0B141A]`}>
+                                <span className={`absolute -top-1 -right-1 ${pathname === '/carrito' && !mobileMenuOpen ? 'bg-cyan-400 text-[#0d131c]' : 'bg-white/20 text-white backdrop-blur-sm'} text-[10px] font-black w-[18px] h-[18px] flex items-center justify-center rounded-full border border-[rgba(255,255,255,0.1)]`}>
                                     {cartCount}
                                 </span>
                             )}
                         </div>
-                        <span className="text-[11px] font-semibold tracking-wide">Carrito</span>
+                        <span className="text-[10px] font-bold tracking-wider">Carrito</span>
                     </Link>
 
-                    {/* Item: Menú */}
-                    <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className={`flex flex-col items-center justify-center w-full h-full gap-[3px] transition-colors ${mobileMenuOpen ? 'text-white' : 'hover:text-white'}`}>
-                        <div className={`flex items-center justify-center w-[60px] h-[30px] rounded-full transition-all ${mobileMenuOpen ? 'bg-[#1e3428]' : 'bg-transparent'}`}>
+                    {/* Item: Menú (Botón Mejorado) */}
+                    <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className={`flex flex-col items-center justify-center w-full h-full gap-1.5 transition-colors ${mobileMenuOpen ? 'text-cyan-400' : 'text-white/40 hover:text-white/80'}`}>
+                        <div className={`flex items-center justify-center w-[46px] h-[32px] rounded-2xl transition-all duration-300 ${mobileMenuOpen ? 'bg-cyan-500/10 shadow-[auto]' : 'bg-transparent'}`}>
                             {mobileMenuOpen ? (
-                                <X size={24} className="text-[#25D366] fill-[#25D366]/20" />
+                                <X size={24} className="stroke-[2.5px] rotate-90 scale-110 transition-transform duration-300" />
                             ) : (
-                                <Menu size={24} />
+                                <Menu size={24} className="transition-transform duration-300" />
                             )}
                         </div>
-                        <span className="text-[11px] font-semibold tracking-wide">Menú</span>
+                        <span className="text-[10px] font-bold tracking-wider">Menú</span>
                     </button>
                 </div>
             </div>
