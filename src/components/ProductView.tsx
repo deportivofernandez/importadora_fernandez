@@ -30,22 +30,35 @@ export default function ProductView({ producto, productosRelacionados }: Product
     })
     const [cantidadCajon, setCantidadCajon] = useState<6 | 12>(12)
 
-    // Nuevo: Selección de Color
-    const [selectedColor, setSelectedColor] = useState<string | null>(null)
+    // Nuevo: Selección de Color (puede ser objeto o string)
+    const [selectedColorState, setSelectedColorState] = useState<any | null>(null)
 
     // Colores disponibles (si la DB no tiene, usamos un fallback seguro)
     const coloresDisponibles = producto.colores && producto.colores.length > 0
         ? producto.colores
         : ['#000000', '#FFFFFF', '#5D4037'] // Negro, Blanco, Café por defecto
 
-    // Función auxiliar para nombres de colores (simple)
-    const getColorName = (hex: string) => {
+    // Helpers para soportar nueva estructura JSON o antiguo string
+    const getHex = (c: any) => typeof c === 'string' ? c : (c?.hex || '#000000')
+    const getImg = (c: any) => typeof c === 'object' ? (c?.imagen_url || null) : null
+    const getName = (c: any) => typeof c === 'string' ? (getColorNameFallback(c)) : (c?.nombre || 'Color')
+
+    const getColorNameFallback = (hex: string) => {
         const names: { [key: string]: string } = {
             '#000000': 'Negro', '#FFFFFF': 'Blanco', '#5D4037': 'Café',
             '#1E40AF': 'Azul', '#DC2626': 'Rojo', '#F59E0B': 'Mostaza'
         }
         return names[hex] || 'Color'
     }
+
+    // Efecto para cambiar imagen si el color tiene una
+    useEffect(() => {
+        if (selectedColorState) {
+            const img = getImg(selectedColorState)
+            if (img) setSelectedImage(img)
+            else setSelectedImage(producto.url_imagen)
+        }
+    }, [selectedColorState, producto.url_imagen])
 
     const handleWhatsAppClick = async () => {
         await supabase.rpc('incrementar_consulta_zapato', { zapato_id: producto.id })
@@ -56,7 +69,7 @@ export default function ProductView({ producto, productosRelacionados }: Product
     }
 
     const handleAddToCart = () => {
-        if (!tipoCurva || !selectedColor) return
+        if (!tipoCurva || !selectedColorState) return
 
         const totalItem = producto.precio * cantidadCajon
 
@@ -64,10 +77,10 @@ export default function ProductView({ producto, productosRelacionados }: Product
             id_producto: producto.id,
             nombre: producto.nombre,
             precio_unitario: producto.precio,
-            imagen: producto.url_imagen, // Idealmente cambiaría según el color elegido
+            imagen: getImg(selectedColorState) || producto.url_imagen,
             tipo_curva: tipoCurva,
             cantidad_pares: cantidadCajon,
-            color: getColorName(selectedColor) + ` (${selectedColor})`,
+            color: `${getName(selectedColorState)} (${getHex(selectedColorState)})`,
             total_item: totalItem
         })
 
@@ -206,32 +219,42 @@ export default function ProductView({ producto, productosRelacionados }: Product
                                 <div className="mb-8 p-5 bg-slate-50 rounded-2xl border border-slate-100">
                                     <h3 className="text-sm font-bold text-slate-900 mb-4 uppercase flex items-center justify-between">
                                         3. Elige el Color del Paquete
-                                        {selectedColor && (
+                                        {selectedColorState && (
                                             <span className="text-xs font-normal text-slate-500 normal-case">
-                                                Seleccionado: <strong>{getColorName(selectedColor)}</strong>
+                                                Seleccionado: <strong>{getName(selectedColorState)}</strong>
                                             </span>
                                         )}
                                     </h3>
 
                                     <div className="flex flex-wrap gap-3">
-                                        {coloresDisponibles.map((hex: string) => (
-                                            <button
-                                                key={hex}
-                                                onClick={() => setSelectedColor(hex)}
-                                                className={`w-12 h-12 rounded-full border-2 shadow-sm transition-all relative flex items-center justify-center ${selectedColor === hex
-                                                    ? 'border-orange-500 ring-2 ring-orange-200 scale-110'
-                                                    : 'border-slate-200 hover:scale-105'
-                                                    }`}
-                                                style={{ backgroundColor: hex }}
-                                                title={getColorName(hex)}
-                                            >
-                                                {selectedColor === hex && (
-                                                    <Check size={20} className={hex.toUpperCase() === '#FFFFFF' ? 'text-black' : 'text-white'} />
-                                                )}
-                                            </button>
-                                        ))}
+                                        {coloresDisponibles.map((colorItem: any, idx: number) => {
+                                            const hex = getHex(colorItem)
+                                            const isSelected = selectedColorState === colorItem
+                                            const img = getImg(colorItem)
+                                            return (
+                                                <button
+                                                    key={idx}
+                                                    onClick={() => setSelectedColorState(colorItem)}
+                                                    className={`w-12 h-12 rounded-full border-2 shadow-sm transition-all relative flex items-center justify-center overflow-hidden ${isSelected
+                                                        ? 'border-orange-500 ring-2 ring-orange-200 scale-110'
+                                                        : 'border-slate-200 hover:scale-105'
+                                                        }`}
+                                                    style={img ? undefined : { backgroundColor: hex }}
+                                                    title={getName(colorItem)}
+                                                >
+                                                    {img && (
+                                                        <img src={proxyImageUrl(img)} className="w-full h-full object-cover" alt={getName(colorItem)} />
+                                                    )}
+                                                    {isSelected && (
+                                                        <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                                                            <Check size={20} className="text-white drop-shadow-md" />
+                                                        </div>
+                                                    )}
+                                                </button>
+                                            )
+                                        })}
                                     </div>
-                                    {!selectedColor && (
+                                    {!selectedColorState && (
                                         <p className="text-slate-400 text-xs mt-3 flex items-center gap-1">
                                             <Info size={12} />
                                             Todos los pares del paquete serán de este color.
@@ -260,10 +283,10 @@ export default function ProductView({ producto, productosRelacionados }: Product
                                                 </span>
                                             ) : <span className="text-slate-600 text-xs">Falta Curva</span>}
 
-                                            {selectedColor ? (
+                                            {selectedColorState ? (
                                                 <div className="flex items-center gap-1.5 text-xs font-bold text-white bg-white/10 px-2 py-1 rounded">
-                                                    <div className="w-2 h-2 rounded-full" style={{ background: selectedColor }}></div>
-                                                    {getColorName(selectedColor)}
+                                                    <div className="w-2 h-2 rounded-full" style={{ background: getHex(selectedColorState) }}></div>
+                                                    {getName(selectedColorState)}
                                                 </div>
                                             ) : <span className="text-orange-400 text-xs font-bold animate-pulse">Falta Color</span>}
                                         </div>
@@ -276,8 +299,8 @@ export default function ProductView({ producto, productosRelacionados }: Product
                                 <button
                                     id="add-btn"
                                     onClick={handleAddToCart}
-                                    disabled={!tipoCurva || !selectedColor}
-                                    className={`w-full py-4 text-white rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all ${(tipoCurva && selectedColor)
+                                    disabled={!tipoCurva || !selectedColorState}
+                                    className={`w-full py-4 text-white rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all ${(tipoCurva && selectedColorState)
                                         ? 'bg-orange-500 hover:bg-orange-600 hover:shadow-orange-500/30 hover:translate-y-[-2px]'
                                         : 'bg-slate-300 cursor-not-allowed grayscale'
                                         }`}

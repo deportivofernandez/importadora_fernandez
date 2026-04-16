@@ -17,6 +17,13 @@ import {
     X
 } from 'lucide-react'
 
+export interface VarianteColor {
+    hex: string
+    nombre: string
+    imagen_url?: string | null
+    imagen_file?: File
+}
+
 interface Producto {
     id: string
     nombre: string
@@ -24,7 +31,7 @@ interface Producto {
     precio: number
     categoria: string
     tallas: string[]
-    colores: string[]
+    colores: any[]
     etiquetas: string[]
     url_imagen: string
     imagen_hover?: string
@@ -40,8 +47,6 @@ export default function ProductosAdmin() {
     const [searchTerm, setSearchTerm] = useState('')
     const [showModal, setShowModal] = useState(false)
     const [editingProduct, setEditingProduct] = useState<Producto | null>(null)
-    const [imageFile, setImageFile] = useState<File | null>(null)
-    const [imageHoverFile, setImageHoverFile] = useState<File | null>(null)
 
     const [formData, setFormData] = useState({
         nombre: '',
@@ -49,11 +54,15 @@ export default function ProductosAdmin() {
         precio: '',
         categoria: 'adulto',
         tallas: '',
-        colores: '',
+        colores: [] as VarianteColor[],
         etiquetas: [] as string[],
         origen: 'Nacional', // Nuevo: Origen por defecto
         disponible: true
     })
+
+    // Estado para sub-modal de Variante de Color
+    const [editingVariantIndex, setEditingVariantIndex] = useState<number | null>(null)
+    const [activeVariant, setActiveVariant] = useState<VarianteColor | null>(null)
 
     useEffect(() => {
         checkAuth()
@@ -111,41 +120,37 @@ export default function ProductosAdmin() {
             let url_imagen = editingProduct?.url_imagen || ''
             let imagen_hover = editingProduct?.imagen_hover || null
 
-            // Subir imagen principal
-            if (imageFile) {
-                console.log('Subiendo imagen principal...')
-                const cleanName = sanitizeFileName(imageFile.name)
-                const fileName = `${Date.now()}_${cleanName}`
-
-                const { error: uploadError } = await supabase.storage
-                    .from('zapatos')
-                    .upload(fileName, imageFile)
-
-                if (uploadError) {
-                    showNotification('Error al subir imagen: ' + uploadError.message, 'error')
-                    return
+            // Subir imágenes de variantes individuales (ahora definen url_imagen y hover)
+            const variantesFinales = [...formData.colores]
+            for (let i = 0; i < variantesFinales.length; i++) {
+                const v = variantesFinales[i]
+                if (v.imagen_file) {
+                    const cleanName = sanitizeFileName(v.imagen_file.name)
+                    const fileName = `var_${Date.now()}_${cleanName}`
+                    const { error: uploadError } = await supabase.storage.from('zapatos').upload(fileName, v.imagen_file)
+                    if (!uploadError) {
+                        const { data } = supabase.storage.from('zapatos').getPublicUrl(fileName)
+                        v.imagen_url = data.publicUrl
+                    }
                 }
-
-                const { data } = supabase.storage.from('zapatos').getPublicUrl(fileName)
-                url_imagen = data.publicUrl
+                const vToSave = { ...v }
+                delete vToSave.imagen_file
+                variantesFinales[i] = vToSave
             }
 
-            // Subir imagen hover
-            if (imageHoverFile) {
-                const cleanName = sanitizeFileName(imageHoverFile.name)
-                const fileName = `hover_${Date.now()}_${cleanName}`
+            // Validar que exista una primera variante con imagen para ser url_imagen
+            if (variantesFinales.length > 0 && variantesFinales[0].imagen_url) {
+                url_imagen = variantesFinales[0].imagen_url
+            }
 
-                const { error: uploadError } = await supabase.storage
-                    .from('zapatos')
-                    .upload(fileName, imageHoverFile)
+            // Validar que si hay segunda variante con imagen sirva para hover
+            if (variantesFinales.length > 1 && variantesFinales[1].imagen_url) {
+                imagen_hover = variantesFinales[1].imagen_url
+            }
 
-                if (uploadError) {
-                    showNotification('Error al subir imagen hover: ' + uploadError.message, 'error')
-                    return
-                }
-
-                const { data } = supabase.storage.from('zapatos').getPublicUrl(fileName)
-                imagen_hover = data.publicUrl
+            if (!url_imagen) {
+                showNotification('Debes agregar al menos una variante con imagen (será la principal)', 'error')
+                return
             }
 
             // Construir datos — solo columnas base que seguro existen
@@ -161,7 +166,7 @@ export default function ProductosAdmin() {
             // Columnas opcionales (pueden no existir en versiones antiguas de la tabla)
             const productExtra: any = {
                 tallas: formData.tallas ? formData.tallas.split(',').map(t => t.trim()).filter(t => t) : [],
-                colores: formData.colores ? formData.colores.split(',').map(c => c.trim()).filter(c => c) : [],
+                colores: variantesFinales,
                 etiquetas: formData.etiquetas || [],
                 imagen_hover,
                 origen: formData.origen,
@@ -231,7 +236,10 @@ export default function ProductosAdmin() {
                 precio: producto.precio.toString(),
                 categoria: producto.categoria,
                 tallas: producto.tallas?.join(', ') || '',
-                colores: producto.colores?.join(', ') || '',
+                colores: Array.isArray(producto.colores) ? producto.colores.map((c: any) => {
+                    if (typeof c === 'string') return { hex: c, nombre: 'Color' }
+                    return { hex: c.hex, nombre: c.nombre || 'Color', imagen_url: c.imagen_url }
+                }) : [],
                 etiquetas: producto.etiquetas || [],
                 origen: producto.origen || 'Nacional', // Cargar origen existente
                 disponible: producto.disponible
@@ -244,22 +252,18 @@ export default function ProductosAdmin() {
                 precio: '',
                 categoria: 'adulto',
                 tallas: '',
-                colores: '',
+                colores: [],
                 etiquetas: [],
                 origen: 'Nacional',
                 disponible: true
             })
         }
-        setImageFile(null)
-        setImageHoverFile(null)
         setShowModal(true)
     }
 
     const closeModal = () => {
         setShowModal(false)
         setEditingProduct(null)
-        setImageFile(null)
-        setImageHoverFile(null)
     }
 
     const toggleEtiqueta = (etiqueta: string) => {
@@ -589,89 +593,18 @@ export default function ProductosAdmin() {
                                         <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
                                             <h3 className="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
                                                 <div className="w-1 h-4 bg-orange-500 rounded-full"></div>
-                                                Variantes
+                                                Tallas Disponibles
                                             </h3>
 
-                                            <div className="space-y-3">
-                                                <div>
-                                                    <label className="block text-xs font-semibold text-slate-600 mb-1.5">Tallas Disponibles</label>
-                                                    <input
-                                                        type="text"
-                                                        value={formData.tallas}
-                                                        onChange={(e) => setFormData({ ...formData, tallas: e.target.value })}
-                                                        placeholder="35, 36, 37, 38, 39, 40"
-                                                        className="w-full px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white transition-all"
-                                                    />
-                                                    <p className="text-xs text-slate-500 mt-1">Separa las tallas con comas</p>
-                                                </div>
-
-                                                <div>
-                                                    <label className="block text-xs font-semibold text-slate-600 mb-2">Colores Disponibles</label>
-
-                                                    {/* Paleta de Colores Predefinida */}
-                                                    <div className="flex flex-wrap gap-2 mb-3">
-                                                        {[
-                                                            { hex: '#000000', name: 'Negro' },
-                                                            { hex: '#FFFFFF', name: 'Blanco' },
-                                                            { hex: '#5D4037', name: 'Café' },
-                                                            { hex: '#1E40AF', name: 'Azul' },
-                                                            { hex: '#DC2626', name: 'Rojo' },
-                                                            { hex: '#F59E0B', name: 'Mostaza' },
-                                                            { hex: '#E5E7EB', name: 'Gris' },
-                                                            { hex: '#D1D5DB', name: 'Plata' },
-                                                            { hex: '#FEF3C7', name: 'Beige' },
-                                                            { hex: '#FCD34D', name: 'Dorado' },
-                                                            { hex: '#EC4899', name: 'Rosa' },
-                                                            { hex: '#10B981', name: 'Verde' }
-                                                        ].map((color) => {
-                                                            const isSelected = formData.colores?.includes(color.hex) || formData.colores?.includes(color.hex + '')
-                                                            // Nota: formData.colores viene como string "hex1, hex2" en el estado inicial, pero lo manejaremos mejor
-                                                            // Vamos a asumir que formData.colores es string separado por comas para mantener compatibilidad con el resto del código
-                                                            const currentColors = formData.colores ? formData.colores.split(',').map(c => c.trim()) : []
-                                                            const selected = currentColors.includes(color.hex)
-
-                                                            return (
-                                                                <button
-                                                                    key={color.hex}
-                                                                    type="button"
-                                                                    onClick={() => {
-                                                                        let newColors = [...currentColors]
-                                                                        if (selected) {
-                                                                            newColors = newColors.filter(c => c !== color.hex)
-                                                                        } else {
-                                                                            newColors.push(color.hex)
-                                                                        }
-                                                                        setFormData({ ...formData, colores: newColors.join(', ') })
-                                                                    }}
-                                                                    className={`w-8 h-8 rounded-full border-2 shadow-sm transition-all relative flex items-center justify-center group/tooltip ${selected
-                                                                        ? 'border-orange-500 ring-2 ring-orange-200 scale-110'
-                                                                        : 'border-slate-200 hover:scale-105'
-                                                                        }`}
-                                                                    style={{ backgroundColor: color.hex }}
-                                                                    title={color.name}
-                                                                >
-                                                                    {selected && (
-                                                                        <div className={`w-2 h-2 rounded-full ${color.hex === '#FFFFFF' ? 'bg-black' : 'bg-white'}`}></div>
-                                                                    )}
-                                                                </button>
-                                                            )
-                                                        })}
-                                                    </div>
-
-                                                    {/* Input Manual para colores extra */}
-                                                    <div className="flex gap-2">
-                                                        <input
-                                                            type="text"
-                                                            value={formData.colores}
-                                                            onChange={(e) => setFormData({ ...formData, colores: e.target.value })}
-                                                            placeholder="Ej: #123456, #ABCDEF"
-                                                            className="flex-1 px-3 py-2 text-xs text-slate-900 placeholder-slate-400 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 bg-white"
-                                                        />
-                                                    </div>
-                                                    <p className="text-[10px] text-slate-400 mt-1">Selecciona de la lista o escribe los códigos hex manualmente.</p>
-                                                </div>
-
-                                                <hr className="border-slate-200 my-2" />
+                                            <div>
+                                                <input
+                                                    type="text"
+                                                    value={formData.tallas}
+                                                    onChange={(e) => setFormData({ ...formData, tallas: e.target.value })}
+                                                    placeholder="Ej: 35, 36, 37, 38, 39, 40"
+                                                    className="w-full px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white transition-all"
+                                                />
+                                                <p className="text-xs text-slate-500 mt-1">Separa las tallas con comas</p>
                                             </div>
                                         </div>
                                     </div>
@@ -721,30 +654,47 @@ export default function ProductosAdmin() {
                                         <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
                                             <h3 className="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
                                                 <div className="w-1 h-4 bg-orange-500 rounded-full"></div>
-                                                Imágenes del Producto
+                                                Imágenes y Variantes de Color
                                             </h3>
 
-                                            <div className="space-y-3">
-                                                <div>
-                                                    <label className="block text-xs font-semibold text-slate-600 mb-1.5">Imagen Principal</label>
-                                                    <input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                                                        className="w-full px-3 py-2.5 text-sm text-slate-900 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white transition-all file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 cursor-pointer"
-                                                    />
-                                                    <p className="text-xs text-slate-500 mt-1">Formato: JPG, PNG (máx. 5MB)</p>
-                                                </div>
+                                            <div className="space-y-4">
+                                                <p className="text-xs text-slate-500">
+                                                    La vista priorizará las variantes de la siguiente forma:
+                                                    <br/>• <b>Variante N°1:</b> Imagen Principal del producto.
+                                                    <br/>• <b>Variante N°2:</b> Imagen al pasar el ratón (Hover).
+                                                </p>
 
+                                                {/* Variantes de Color */}
                                                 <div>
-                                                    <label className="block text-xs font-semibold text-slate-600 mb-1.5">Imagen Hover (Opcional)</label>
-                                                    <input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        onChange={(e) => setImageHoverFile(e.target.files?.[0] || null)}
-                                                        className="w-full px-3 py-2.5 text-sm text-slate-900 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white transition-all file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 cursor-pointer"
-                                                    />
-                                                    <p className="text-xs text-slate-500 mt-1">Se muestra al pasar el cursor sobre el producto</p>
+                                                    <label className="block text-xs font-bold text-slate-700 mb-2">Variantes de Color (+ Imágenes Secundarias)</label>
+                                                    <div className="space-y-3 mb-3">
+                                                        {formData.colores.map((variante, idx) => (
+                                                            <div key={idx} onClick={() => { setActiveVariant({ ...variante }); setEditingVariantIndex(idx); }} className="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-orange-500 transition-colors shadow-sm">
+                                                                <div className="flex items-center gap-4">
+                                                                    <div className="w-12 h-12 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center border border-slate-200">
+                                                                        {variante.imagen_file ? (
+                                                                            <img src={URL.createObjectURL(variante.imagen_file)} className="w-full h-full object-cover" alt="Preview"/>
+                                                                        ) : variante.imagen_url ? (
+                                                                            <img src={proxyImageUrl(variante.imagen_url)} className="w-full h-full object-cover" alt={variante.nombre}/>
+                                                                        ) : (
+                                                                            <div className="text-[10px] text-slate-400 font-medium">Sin Img</div>
+                                                                        )}
+                                                                    </div>
+                                                                    <div>
+                                                                        <div className="flex items-center gap-2">
+                                                                            <div className="w-4 h-4 rounded-full border border-slate-300" style={{ backgroundColor: variante.hex }}></div>
+                                                                            <span className="font-bold text-sm text-slate-800">{variante.nombre || 'Sin nombre'}</span>
+                                                                        </div>
+                                                                        <span className="text-xs text-slate-400">{variante.hex}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <button type="button" onClick={(e) => { e.stopPropagation(); setFormData({ ...formData, colores: formData.colores.filter((_, i) => i !== idx) }) }} className="p-2 text-red-400 justify-center flex hover:bg-red-50 rounded-lg transition-colors"><X size={18} /></button>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                    <button type="button" onClick={() => { setActiveVariant({ hex: '#000000', nombre: 'Nuevo Color' }); setEditingVariantIndex(-1); }} className="w-full py-3 border-2 border-dashed border-slate-300 text-slate-500 rounded-xl font-bold hover:bg-slate-50 hover:border-orange-400 hover:text-orange-500 transition-colors flex items-center justify-center gap-2">
+                                                        <Plus size={18} /> Agregar Variante de Color
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -794,6 +744,66 @@ export default function ProductosAdmin() {
                             </div>
                         </form>
                     </div>
+
+                    {/* Sub Modal de Variante */}
+                    {activeVariant && (
+                        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                            <div className="w-full max-w-lg bg-white rounded-2xl flex flex-col max-h-[90vh] shadow-2xl overflow-hidden relative">
+                                <div className="bg-orange-600 px-6 py-4 flex justify-between items-center text-white">
+                                    <h2 className="text-xl font-bold">Editar Variante de Color</h2>
+                                    <button type="button" onClick={() => { setActiveVariant(null); setEditingVariantIndex(null); }} className="hover:bg-white/20 p-2 rounded-lg"><X size={22} /></button>
+                                </div>
+                                <div className="p-6 flex-1 overflow-y-auto space-y-6">
+                                    <div>
+                                        <label className="block text-sm font-bold text-slate-700 mb-2">Color seleccionado</label>
+                                        <div className="flex flex-wrap gap-2 mb-3">
+                                            {['#000000', '#FFFFFF', '#5D4037', '#1E40AF', '#DC2626', '#F59E0B', '#E5E7EB', '#10B981', '#EC4899', '#D1D5DB'].map(c => (
+                                                <button key={c} type="button" onClick={() => setActiveVariant({ ...activeVariant, hex: c })} className={`w-10 h-10 rounded-full border-2 ${activeVariant.hex === c ? 'border-orange-500 ring-2' : 'border-slate-200'}`} style={{ backgroundColor: c }}></button>
+                                            ))}
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <input type="color" value={activeVariant.hex} onChange={e => setActiveVariant({ ...activeVariant, hex: e.target.value })} className="w-12 h-12 cursor-pointer border-0 p-0 rounded-lg"/>
+                                            <input type="text" value={activeVariant.hex} onChange={e => setActiveVariant({ ...activeVariant, hex: e.target.value })} className="flex-1 py-2 px-3 border border-slate-300 rounded-lg font-mono text-slate-600"/>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-slate-700 mb-2">Nombre del Color</label>
+                                        <input type="text" value={activeVariant.nombre} onChange={e => setActiveVariant({ ...activeVariant, nombre: e.target.value })} className="w-full py-2.5 px-3 border border-slate-300 rounded-lg" placeholder="Ej: Verde Esmeralda"/>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-slate-700 mb-2">Imagen del Zapato en este Color</label>
+                                        <div className="border-2 border-dashed border-slate-300 rounded-2xl p-6 flex flex-col justify-center items-center gap-2 cursor-pointer hover:bg-slate-50 relative">
+                                            {(activeVariant.imagen_file || activeVariant.imagen_url) ? (
+                                                <div className="w-32 h-32 rounded-xl overflow-hidden relative group border border-slate-200">
+                                                    <img src={activeVariant.imagen_file ? URL.createObjectURL(activeVariant.imagen_file) : proxyImageUrl(activeVariant.imagen_url)} className="w-full h-full object-cover"/>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <Upload size={30} className="text-slate-400" />
+                                                    <p className="text-sm font-bold text-slate-600">Haz clic para subir imagen</p>
+                                                    <p className="text-xs text-slate-400">JPG, PNG (máx. 5MB)</p>
+                                                </>
+                                            )}
+                                            <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" onChange={(e) => {
+                                                if (e.target.files?.[0]) setActiveVariant({ ...activeVariant, imagen_file: e.target.files[0] })
+                                            }}/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="p-4 border-t border-slate-200 bg-slate-50 flex gap-3">
+                                    <button type="button" onClick={() => setActiveVariant(null)} className="flex-1 py-3 bg-white border border-slate-300 rounded-xl font-bold text-slate-600">Cerrar</button>
+                                    <button type="button" onClick={() => {
+                                        const newColores = [...formData.colores];
+                                        if (editingVariantIndex === -1) newColores.push(activeVariant);
+                                        else newColores[editingVariantIndex as number] = activeVariant;
+                                        setFormData({ ...formData, colores: newColores });
+                                        setActiveVariant(null);
+                                        setEditingVariantIndex(null);
+                                    }} className="flex-1 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-bold shadow-lg">Guardar Variante</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

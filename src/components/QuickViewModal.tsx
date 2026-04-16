@@ -14,7 +14,7 @@ interface QuickViewProps {
 
 export default function QuickViewModal({ producto, isOpen, onClose }: QuickViewProps) {
     const [selectedCurva, setSelectedCurva] = useState<string>('')
-    const [selectedColor, setSelectedColor] = useState<string>('')
+    const [selectedColorState, setSelectedColorState] = useState<any | null>(null)
     const [cantidadPares, setCantidadPares] = useState<6 | 12>(12) // Default docena
     const { addToCart } = useCart()
     const [isAdded, setIsAdded] = useState(false)
@@ -23,7 +23,7 @@ export default function QuickViewModal({ producto, isOpen, onClose }: QuickViewP
     useEffect(() => {
         if (isOpen) {
             setSelectedCurva('')
-            setSelectedColor('')
+            setSelectedColorState(null)
             setCantidadPares(12)
             setIsAdded(false)
         }
@@ -38,17 +38,22 @@ export default function QuickViewModal({ producto, isOpen, onClose }: QuickViewP
         { label: 'Adulto', range: '38-43', value: 'Adulto (38-43)' }
     ]
 
+    // Helpers para soportar nueva estructura JSON o antiguo string
+    const getHex = (c: any) => typeof c === 'string' ? c : (c?.hex || '#000000')
+    const getImg = (c: any) => typeof c === 'object' ? (c?.imagen_url || null) : null
+    const getName = (c: any) => typeof c === 'object' ? (c?.nombre || 'Color') : 'Color'
+
     const handleAddToCart = () => {
-        if (!selectedCurva || !selectedColor) return
+        if (!selectedCurva || !selectedColorState) return
 
         addToCart({
             id_producto: producto.id,
             nombre: producto.nombre,
             precio_unitario: producto.precio,
-            imagen: producto.url_imagen, // Aquí se guarda la original si se quiere (o la versión proxy si prefieren)
+            imagen: getImg(selectedColorState) || producto.url_imagen,
             tipo_curva: selectedCurva as any,
             cantidad_pares: cantidadPares,
-            color: selectedColor,
+            color: `${getName(selectedColorState)} (${getHex(selectedColorState)})`,
             total_item: producto.precio * cantidadPares
         })
 
@@ -84,7 +89,7 @@ export default function QuickViewModal({ producto, isOpen, onClose }: QuickViewP
                 {/* Columna Izquierda: Imagen */}
                 <div className="w-full md:w-1/2 bg-slate-50 relative flex items-center justify-center p-8">
                     <img
-                        src={proxyImageUrl(producto.url_imagen)}
+                        src={proxyImageUrl(selectedColorState ? (getImg(selectedColorState) || producto.url_imagen) : producto.url_imagen)}
                         alt={producto.nombre}
                         className="w-full h-full object-contain mix-blend-multiply max-h-[300px] md:max-h-[400px]"
                     />
@@ -134,22 +139,32 @@ export default function QuickViewModal({ producto, isOpen, onClose }: QuickViewP
                         <div>
                             <span className="text-xs font-bold text-slate-400 uppercase tracking-wide block mb-2">2. Elige Color</span>
                             <div className="flex flex-wrap gap-2">
-                                {coloresDisponibles.map((hex: string) => (
-                                    <button
-                                        key={hex}
-                                        onClick={() => setSelectedColor(hex)}
-                                        className={`w-8 h-8 rounded-full border-2 shadow-sm transition-all relative flex items-center justify-center ${selectedColor === hex
-                                                ? 'border-orange-500 ring-1 ring-orange-200 scale-110'
-                                                : 'border-slate-200 hover:scale-105'
-                                            }`}
-                                        style={{ backgroundColor: hex }}
-                                        title={hex}
-                                    >
-                                        {selectedColor === hex && (
-                                            <Check size={14} className={hex.toUpperCase() === '#FFFFFF' ? 'text-black' : 'text-white'} />
-                                        )}
-                                    </button>
-                                ))}
+                                {coloresDisponibles.map((colorItem: any, idx: number) => {
+                                    const hex = getHex(colorItem)
+                                    const isSelected = selectedColorState === colorItem
+                                    const img = getImg(colorItem)
+                                    return (
+                                        <button
+                                            key={idx}
+                                            onClick={() => setSelectedColorState(colorItem)}
+                                            className={`w-8 h-8 rounded-full border-2 shadow-sm transition-all relative flex items-center justify-center overflow-hidden ${isSelected
+                                                    ? 'border-orange-500 ring-1 ring-orange-200 scale-110'
+                                                    : 'border-slate-200 hover:scale-105'
+                                                }`}
+                                            style={img ? undefined : { backgroundColor: hex }}
+                                            title={getName(colorItem)}
+                                        >
+                                            {img && (
+                                                <img src={proxyImageUrl(img)} className="w-full h-full object-cover" alt={getName(colorItem)} />
+                                            )}
+                                            {isSelected && (
+                                                <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                                                    <Check size={14} className="text-white drop-shadow-md" />
+                                                </div>
+                                            )}
+                                        </button>
+                                    )
+                                })}
                             </div>
                         </div>
 
@@ -176,10 +191,10 @@ export default function QuickViewModal({ producto, isOpen, onClose }: QuickViewP
                     <div className="mt-auto space-y-3">
                         <button
                             onClick={handleAddToCart}
-                            disabled={!selectedCurva || !selectedColor || isAdded}
+                            disabled={!selectedCurva || !selectedColorState || isAdded}
                             className={`w-full py-4 rounded-xl flex items-center justify-center gap-2 font-bold text-sm transition-all ${isAdded
                                     ? 'bg-green-500 text-white'
-                                    : (!selectedCurva || !selectedColor)
+                                    : (!selectedCurva || !selectedColorState)
                                         ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
                                         : 'bg-slate-900 text-white hover:bg-slate-800 shadow-lg hover:shadow-xl hover:-translate-y-1'
                                 }`}
