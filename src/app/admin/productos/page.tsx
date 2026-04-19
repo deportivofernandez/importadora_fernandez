@@ -768,7 +768,7 @@ export default function ProductosAdmin() {
                                     </div>
                                     <div>
                                         <label className="block text-sm font-bold text-slate-700 mb-2">Nombre del Color</label>
-                                        <input type="text" value={activeVariant.nombre} onChange={e => setActiveVariant({ ...activeVariant, nombre: e.target.value })} className="w-full py-2.5 px-3 border border-slate-300 rounded-lg" placeholder="Ej: Verde Esmeralda"/>
+                                        <input type="text" value={activeVariant.nombre} onChange={e => setActiveVariant({ ...activeVariant, nombre: e.target.value })} className="w-full py-2.5 px-3 border border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none" placeholder="Ej: Verde Esmeralda"/>
                                     </div>
                                     <div>
                                         <label className="block text-sm font-bold text-slate-700 mb-2">Imagen del Zapato en este Color</label>
