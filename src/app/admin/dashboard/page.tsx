@@ -61,51 +61,39 @@ export default function AdminDashboard() {
     }
 
     const loadStats = async () => {
-        const { count: totalProductos } = await supabase
+        // ✅ 1 sola query en lugar de 4 — traemos solo los campos necesarios
+        const { data: productos } = await supabase
             .from('zapatos')
-            .select('*', { count: 'exact', head: true })
+            .select('disponible, categoria, fecha_creacion')
 
-        const { count: productosActivos } = await supabase
-            .from('zapatos')
-            .select('*', { count: 'exact', head: true })
-            .eq('disponible', true)
+        if (!productos) return
 
-        const { data: categoriasData } = await supabase
-            .from('zapatos')
-            .select('categoria')
+        // Calcular todas las métricas del lado del cliente
+        const totalProductos = productos.length
+        const productosActivos = productos.filter(p => p.disponible).length
 
-        // Procesar datos para el gráfico
-        let catMap: { [key: string]: number } = {};
-        if (categoriasData) {
-            categoriasData.forEach((item: any) => {
-                const cat = item.categoria || 'Sin Categoría';
-                catMap[cat] = (catMap[cat] || 0) + 1;
-            });
-        }
+        // Categorías únicas
+        const categoriasUnicas = new Set(productos.map(p => p.categoria))
 
-        const formattedChartData = Object.keys(catMap).map(key => ({
-            name: key,
-            cantidad: catMap[key]
-        })).sort((a, b) => b.cantidad - a.cantidad); // Ordenar por mayor cantidad
-
-        setChartData(formattedChartData);
-
-        const categoriasUnicas = new Set(categoriasData?.map((p: any) => p.categoria))
-
+        // Productos añadidos en los últimos 7 días
         const hace7Dias = new Date()
         hace7Dias.setDate(hace7Dias.getDate() - 7)
+        const productosNuevos = productos.filter(p =>
+            new Date(p.fecha_creacion) >= hace7Dias
+        ).length
 
-        const { count: productosNuevos } = await supabase
-            .from('zapatos')
-            .select('*', { count: 'exact', head: true })
-            .gte('fecha_creacion', hace7Dias.toISOString())
-
-        setStats({
-            totalProductos: totalProductos || 0,
-            productosActivos: productosActivos || 0,
-            categorias: categoriasUnicas.size,
-            productosNuevos: productosNuevos || 0
+        // Datos para el gráfico de barras por categoría
+        const catMap: { [key: string]: number } = {}
+        productos.forEach((item) => {
+            const cat = item.categoria || 'Sin Categoría'
+            catMap[cat] = (catMap[cat] || 0) + 1
         })
+        const formattedChartData = Object.keys(catMap)
+            .map(key => ({ name: key, cantidad: catMap[key] }))
+            .sort((a, b) => b.cantidad - a.cantidad)
+
+        setChartData(formattedChartData)
+        setStats({ totalProductos, productosActivos, categorias: categoriasUnicas.size, productosNuevos })
     }
 
     const handleLogout = async () => {

@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import ProductCard from '@/components/ProductCard'
 import {
-    ArrowRight, Package, Layers, CheckCircle,
+    ArrowRight, Package,
     Globe, Star, ShieldCheck, Zap
 } from 'lucide-react'
 
@@ -19,12 +19,13 @@ export default async function Home() {
         .eq('activo', true)
         .single()
 
-    // Zapatos disponibles
+    // Zapatos disponibles — solo columnas necesarias para la portada, máx 20
     const { data: zapatos } = await supabase
         .from('zapatos')
-        .select('*')
+        .select('id, nombre, precio, url_imagen, imagen_hover, categoria, disponible, colores, etiquetas, origen, fecha_creacion')
         .eq('disponible', true)
         .order('fecha_creacion', { ascending: false })
+        .limit(20)
 
     // Slides para el Hero
     const slides = []

@@ -52,11 +52,11 @@ export default function ProductosAdmin() {
         nombre: '',
         descripcion: '',
         precio: '',
-        categoria: 'adulto',
+        categoria: 'deportivo',
         tallas: '',
         colores: [] as VarianteColor[],
         etiquetas: [] as string[],
-        origen: 'Nacional', // Nuevo: Origen por defecto
+        origen: 'Nacional',
         disponible: true
     })
 
@@ -250,7 +250,7 @@ export default function ProductosAdmin() {
                 nombre: '',
                 descripcion: '',
                 precio: '',
-                categoria: 'adulto',
+                categoria: 'deportivo',
                 tallas: '',
                 colores: [],
                 etiquetas: [],
@@ -402,7 +402,7 @@ export default function ProductosAdmin() {
                                 </div>
 
                                 <div className="flex items-end justify-between mb-4">
-                                    <p className="text-2xl font-bold text-slate-900">${producto.precio}</p>
+                                    <p className="text-2xl font-bold text-slate-900">Bs {producto.precio}</p>
                                     <div className="flex -space-x-2">
                                         {producto.colores?.slice(0, 3).map((color, idx) => (
                                             <div
@@ -555,11 +555,13 @@ export default function ProductosAdmin() {
                                                         required
                                                     >
                                                         <option value="">Seleccionar...</option>
-                                                        <option value="deportivo">Deportivos</option>
-                                                        <option value="formales">Formales</option>
+                                                        <option value="deportivo">Deportivo</option>
+                                                        <option value="casual">Casual</option>
+                                                        <option value="formal">Formal</option>
                                                         <option value="botas">Botas</option>
                                                         <option value="sandalias">Sandalias</option>
-                                                        <option value="casuales">Casuales</option>
+                                                        <option value="adulto">Adulto (general)</option>
+                                                        <option value="nino">Niño</option>
                                                     </select>
                                                 </div>
                                             </div>
