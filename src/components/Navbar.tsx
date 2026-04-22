@@ -18,6 +18,7 @@ export default function Navbar() {
     const [userMenuOpen, setUserMenuOpen] = useState(false)
     const [user, setUser] = useState<any>(null)
     const [scrolled, setScrolled] = useState(false)
+    const [navVisible, setNavVisible] = useState(true)  // controla si el bottom nav se ve
 
     const [searchTerm, setSearchTerm] = useState('')
     const [searchResults, setSearchResults] = useState<any[]>([])
@@ -53,8 +54,22 @@ export default function Navbar() {
 
     useEffect(() => {
         checkUser()
-        const onScroll = () => setScrolled(window.scrollY > 10)
-        window.addEventListener('scroll', onScroll)
+        let lastScrollY = window.scrollY
+
+        const onScroll = () => {
+            const currentY = window.scrollY
+            setScrolled(currentY > 10)
+
+            // Ocultar bottom nav al bajar, mostrar al subir
+            if (currentY > lastScrollY + 5 && currentY > 60) {
+                setNavVisible(false)   // scrolling down
+            } else if (currentY < lastScrollY - 5) {
+                setNavVisible(true)    // scrolling up
+            }
+            lastScrollY = currentY
+        }
+
+        window.addEventListener('scroll', onScroll, { passive: true })
         const handleClickOutside = (event: MouseEvent) => {
             const target = event.target as HTMLElement
             if (userMenuOpen && !target.closest('.user-menu-container')) {
@@ -422,7 +437,7 @@ export default function Navbar() {
             )}
 
             {/* Bottom Navigation for Mobile (Modern Elegant Style) */}
-            <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0d131c]/90 backdrop-blur-xl border-t border-white/5 pb-6 pt-3 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+            <div className={`lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0d131c]/90 backdrop-blur-xl border-t border-white/5 pb-6 pt-3 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] transition-transform duration-300 ease-in-out ${(navVisible || mobileMenuOpen) ? 'translate-y-0' : 'translate-y-full'}`}>
                 <div className="flex items-center justify-around h-[48px] px-2 max-w-sm mx-auto">
                     {/* Item: Inicio */}
                     <Link href="/" onClick={() => setMobileMenuOpen(false)} className={`flex flex-col items-center justify-center w-full h-full gap-1.5 transition-colors ${pathname === '/' && !mobileMenuOpen ? 'text-cyan-400' : 'text-white/40 hover:text-white/80'}`}>

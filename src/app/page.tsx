@@ -237,7 +237,7 @@ export default async function Home() {
                 </div>
 
                 {zapatos && zapatos.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
                         {zapatos.map((zapato) => (
                             <ProductCard key={zapato.id} zapato={zapato} />
                         ))}
