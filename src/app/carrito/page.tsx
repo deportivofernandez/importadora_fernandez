@@ -7,7 +7,7 @@ import { proxyImageUrl } from '@/lib/supabase'
 import Navbar from '@/components/Navbar'
 
 // Número de WhatsApp para recibir pedidos
-const WHATSAPP_NUMBER = '59178303866'
+const WHATSAPP_NUMBER = '59173970609'
 
 export default function CarritoPage() {
     const { items, removeFromCart, cartTotal, clearCart, cartCount } = useCart()

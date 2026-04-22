@@ -8,7 +8,7 @@ import { ArrowLeft, MessageCircle, ShieldCheck, Truck, Package, Info, ShoppingBa
 import ProductCard from '@/components/ProductCard' // Asegurar import
 import { useCart } from '@/context/CartContext'
 
-const WHATSAPP_NUMBER = '59178303866'
+const WHATSAPP_NUMBER = '59173970609'
 
 interface ProductViewProps {
     producto: any
