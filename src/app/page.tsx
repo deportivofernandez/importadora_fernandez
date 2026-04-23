@@ -95,7 +95,7 @@ export default async function Home() {
                                     <img
                                         src={proxyImageUrl(pNuevo.url_imagen)}
                                         alt={pNuevo.nombre}
-                                        className="w-full h-full object-contain transform rotate-[-8deg] group-hover:rotate-0 group-hover:scale-105 transition-all duration-500 drop-shadow-xl"
+                                        className="w-full h-full object-contain rounded-2xl transform rotate-[-8deg] group-hover:rotate-0 group-hover:scale-105 transition-all duration-500 drop-shadow-xl"
                                     />
                                 </div>
                             )}
@@ -122,7 +122,7 @@ export default async function Home() {
                                     <img
                                         src={proxyImageUrl(pPopular.url_imagen)}
                                         alt={pPopular.nombre}
-                                        className="w-full h-full object-contain transform rotate-[-8deg] group-hover:rotate-0 group-hover:scale-105 transition-all duration-500 drop-shadow-xl"
+                                        className="w-full h-full object-contain rounded-2xl transform rotate-[-8deg] group-hover:rotate-0 group-hover:scale-105 transition-all duration-500 drop-shadow-xl"
                                     />
                                 </div>
                             )}
@@ -153,7 +153,7 @@ export default async function Home() {
                                     <img
                                         src={proxyImageUrl(pOferta.url_imagen)}
                                         alt={pOferta.nombre}
-                                        className="w-full h-full object-contain transform rotate-[-8deg] group-hover:rotate-0 group-hover:scale-105 transition-all duration-500 drop-shadow-xl"
+                                        className="w-full h-full object-contain rounded-2xl transform rotate-[-8deg] group-hover:rotate-0 group-hover:scale-105 transition-all duration-500 drop-shadow-xl"
                                     />
                                 </div>
                             )}

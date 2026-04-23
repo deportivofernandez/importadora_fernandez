@@ -70,8 +70,8 @@ export default function ProductCard({ zapato, onQuickView }: { zapato: any, onQu
                     <img
                         src={proxyImageUrl(isHovered && zapato.imagen_hover ? zapato.imagen_hover : (activeImg || zapato.url_imagen))}
                         alt={zapato.nombre}
-                        className={`w-full h-full object-contain transition-transform duration-500 ${isHovered ? 'scale-108' : 'scale-100'}`}
-                        style={{ padding: '12px' }}
+                        className={`w-full h-full object-contain rounded-2xl transition-transform duration-500 ${isHovered ? 'scale-108' : 'scale-100'}`}
+                        style={{ padding: '8px' }}
                     />
 
                     {/* Overlay consultar al hacer hover */}

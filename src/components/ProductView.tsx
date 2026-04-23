@@ -119,7 +119,7 @@ export default function ProductView({ producto, productosRelacionados }: Product
                                 <img
                                     src={proxyImageUrl(selectedImage)}
                                     alt={producto.nombre}
-                                    className="w-full h-full object-contain mix-blend-multiply transition-all duration-500 hover:scale-105 drop-shadow-xl"
+                                    className="w-full h-full object-contain rounded-3xl mix-blend-multiply transition-all duration-500 hover:scale-105 drop-shadow-xl"
                                 />
                                 <div className="absolute top-0 left-0 flex flex-col gap-2">
                                     {producto.etiquetas?.includes('nuevo') && (
