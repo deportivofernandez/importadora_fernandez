@@ -377,7 +377,7 @@ export default function Navbar() {
             {mobileMenuOpen && (
                 <div className="lg:hidden bg-[#161f2e]/95 backdrop-blur-xl border-t border-white/5 shadow-2xl fixed inset-0 top-[73px] bottom-[75px] z-40 overflow-y-auto w-full pb-10 animate-in fade-in duration-200">
                     <div className="px-5 py-6 space-y-2">
-                        <div className="flex items-center bg-[#0d131c] rounded-2xl px-4 py-3.5 gap-3 border border-white/5 mb-6 focus-within:border-cyan-500/30 focus-within:shadow-[0_0_15px_rgba(6,182,212,0.15)] transition-all">
+                        <div className="flex items-center bg-navy-900 rounded-2xl px-4 py-3.5 gap-3 border border-white/5 mb-6 focus-within:border-cyan-500/30 focus-within:shadow-[0_0_15px_rgba(6,182,212,0.15)] transition-all">
                             <Search size={18} className="text-white/30" />
                             <input
                                 type="text"
@@ -392,7 +392,7 @@ export default function Navbar() {
 
                         {/* Search Results Mobile */}
                         {searchResults.length > 0 && (
-                            <div className="mb-6 bg-[#0d131c] rounded-2xl border border-white/5 overflow-hidden shadow-lg">
+                            <div className="mb-6 bg-navy-900 rounded-2xl border border-white/5 overflow-hidden shadow-lg">
                                 <div className="p-2">
                                     <p className="text-[10px] font-bold text-cyan-400/70 px-3 py-2 uppercase tracking-widest">Resultados</p>
                                     {searchResults.map((result) => (
@@ -416,19 +416,19 @@ export default function Navbar() {
 
                         <div className="space-y-1">
                             <Link href="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 py-4 px-4 text-white/70 hover:text-white hover:bg-white/5 rounded-2xl text-[16px] font-medium transition-all group">
-                                <div className="w-11 h-11 rounded-2xl bg-[#0d131c] flex items-center justify-center flex-shrink-0 text-white/40 group-hover:text-cyan-400 group-hover:scale-110 transition-all border border-white/5 shadow-sm"><Home size={20} /></div>
+                                <div className="w-11 h-11 rounded-2xl bg-navy-900 flex items-center justify-center flex-shrink-0 text-white/40 group-hover:text-cyan-400 group-hover:scale-110 transition-all border border-white/5 shadow-sm"><Home size={20} /></div>
                                 Inicio
                             </Link>
                             <Link href="/catalogo" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 py-4 px-4 text-white/70 hover:text-white hover:bg-white/5 rounded-2xl text-[16px] font-medium transition-all group">
-                                <div className="w-11 h-11 rounded-2xl bg-[#0d131c] flex items-center justify-center flex-shrink-0 text-white/40 group-hover:text-blue-400 group-hover:scale-110 transition-all border border-white/5 shadow-sm"><LayoutGrid size={20} /></div>
+                                <div className="w-11 h-11 rounded-2xl bg-navy-900 flex items-center justify-center flex-shrink-0 text-white/40 group-hover:text-blue-400 group-hover:scale-110 transition-all border border-white/5 shadow-sm"><LayoutGrid size={20} /></div>
                                 Catálogo Completo
                             </Link>
                             <Link href="/nuevos" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 py-4 px-4 text-white/70 hover:text-white hover:bg-white/5 rounded-2xl text-[16px] font-medium transition-all group">
-                                <div className="w-11 h-11 rounded-2xl bg-[#0d131c] flex items-center justify-center flex-shrink-0 text-white/40 group-hover:text-indigo-400 group-hover:scale-110 transition-all border border-white/5 shadow-sm"><Sparkles size={20} /></div>
+                                <div className="w-11 h-11 rounded-2xl bg-navy-900 flex items-center justify-center flex-shrink-0 text-white/40 group-hover:text-indigo-400 group-hover:scale-110 transition-all border border-white/5 shadow-sm"><Sparkles size={20} /></div>
                                 Nuevos Ingresos
                             </Link>
                             <Link href="/ofertas" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 py-4 px-4 text-white/70 hover:text-white hover:bg-white/5 rounded-2xl text-[16px] font-medium transition-all group">
-                                <div className="w-11 h-11 rounded-2xl bg-[#0d131c] flex items-center justify-center flex-shrink-0 text-white/40 group-hover:text-rose-400 group-hover:scale-110 transition-all border border-white/5 shadow-sm"><Tag size={20} /></div>
+                                <div className="w-11 h-11 rounded-2xl bg-navy-900 flex items-center justify-center flex-shrink-0 text-white/40 group-hover:text-rose-400 group-hover:scale-110 transition-all border border-white/5 shadow-sm"><Tag size={20} /></div>
                                 Ofertas
                             </Link>
                         </div>
@@ -438,7 +438,7 @@ export default function Navbar() {
 
             {/* ── BOTTOM NAV FLOTANTE — Estilo 2025 ─────────────────────────── */}
             <div className={`lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-in-out ${(navVisible || mobileMenuOpen) ? 'translate-y-0 opacity-100' : 'translate-y-24 opacity-0 pointer-events-none'}`}>
-                <div className="flex items-center gap-1 bg-[#0d131c]/80 backdrop-blur-2xl border border-white/10 rounded-[28px] px-2 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.04)]">
+                <div className="flex items-center gap-1 bg-navy-900/80 backdrop-blur-2xl border border-white/10 rounded-[28px] px-2 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.04)]">
 
                     {/* Inicio */}
                     <Link

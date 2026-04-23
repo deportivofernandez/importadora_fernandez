@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --background: #1B2436;
+  --background: #0284C7;   /* azul cielo principal — base del body lo define el componente */
   --foreground: #FFFFFF;
-  --navy-main:  #1B2436;
-  --navy-dark:  #141B29;
-  --navy-deeper:#0D121C;
+  --navy-main:  #0284C7;
+  --navy-dark:  #0369A1;
+  --navy-deeper:#075985;
 }
 
 

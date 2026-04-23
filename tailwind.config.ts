@@ -20,18 +20,18 @@ const config: Config = {
             colors: {
                 background: "var(--background)",
                 foreground: "var(--foreground)",
-                // Paleta Importadora Fernández — Azul Marino + Negro + Blanco
+                // Paleta Importadora Fernández — Opción C: Azul Cielo & Naranja
                 'navy': {
-                    50:  '#E8ECF2',
-                    100: '#C5CEDC',
-                    200: '#9AADC4',
-                    300: '#6F8BAC',
-                    400: '#4D6F95',
-                    500: '#2B537E',
-                    600: '#1B2436',
-                    700: '#141B29',
-                    800: '#0D121C',
-                    900: '#07090E',
+                    50:  '#F0F9FF',  // fondo principal (azul muy claro)
+                    100: '#E0F2FE',  // fondo hover
+                    200: '#BAE6FD',  // bordes claros
+                    300: '#7DD3FC',  // acento claro
+                    400: '#38BDF8',  // celeste brillante
+                    500: '#0EA5E9',  // azul cielo medio
+                    600: '#0284C7',  // azul cielo principal (navbar, hero)
+                    700: '#0369A1',  // azul cielo oscuro (hover)
+                    800: '#075985',  // azul profundo (cards)
+                    900: '#0C4A6E',  // azul más oscuro (footer)
                 },
                 'brand': {
                     black:  '#0D0D0D',

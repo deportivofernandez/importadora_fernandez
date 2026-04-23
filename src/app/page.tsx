@@ -4,10 +4,7 @@ import HeroSection from '@/components/HeroSection'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import ProductCard from '@/components/ProductCard'
-import {
-    ArrowRight, Package,
-    Globe, Star, ShieldCheck, Zap
-} from 'lucide-react'
+import { ArrowRight, Package, Star, ShieldCheck } from 'lucide-react'
 
 export const revalidate = 0;
 
@@ -71,42 +68,7 @@ export default async function Home() {
             <HeroSection slides={slides} />
 
 
-            {/* ── STRIP DE CONFIANZA ─────────────────────────────────────── */}
-            <section className="bg-navy-800 border-b border-white/8">
-                <div className="max-w-7xl mx-auto px-4 py-5">
-                    <div className="flex flex-wrap items-center justify-center md:justify-between gap-6 text-white/50 text-xs font-semibold tracking-widest uppercase">
-                        <div className="flex items-center gap-2">
-                            <Globe size={14} className="text-white/30" />
-                            Calzado Brasilero
-                        </div>
-                        <div className="hidden md:block h-4 w-px bg-white/10" />
-                        <div className="flex items-center gap-2">
-                            <Globe size={14} className="text-white/30" />
-                            Calzado Peruano
-                        </div>
-                        <div className="hidden md:block h-4 w-px bg-white/10" />
-                        <div className="flex items-center gap-2">
-                            <Globe size={14} className="text-white/30" />
-                            Producción Nacional
-                        </div>
-                        <div className="hidden md:block h-4 w-px bg-white/10" />
-                        <div className="flex items-center gap-2">
-                            <ShieldCheck size={14} className="text-white/30" />
-                            Precio Mayorista Directo
-                        </div>
-                        <div className="hidden md:block h-4 w-px bg-white/10" />
-                        <div className="flex items-center gap-2">
-                            <Star size={14} className="text-white/30" />
-                            Stock Actualizado
-                        </div>
-                        <div className="hidden md:block h-4 w-px bg-white/10" />
-                        <div className="flex items-center gap-2">
-                            <Zap size={14} className="text-white/30" />
-                            Despacho Rápido
-                        </div>
-                    </div>
-                </div>
-            </section>
+
 
             {/* ── CARDS DESTACADAS ───────────────────────────────────────── */}
             <section className="relative z-10 max-w-7xl mx-auto px-4 py-14">
@@ -118,7 +80,7 @@ export default async function Home() {
                             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none rounded-2xl" />
                             <div className="relative z-20 max-w-[55%]">
                                 <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-white/60 bg-white/10 border border-white/10 px-3 py-1 rounded-full mb-3">
-                                    <Zap size={9} /> Nuevo Ingreso
+                                    <Package size={9} /> Nuevo Ingreso
                                 </span>
                                 <h3 className="text-white text-xl font-black leading-tight line-clamp-2">
                                     {pNuevo?.nombre || 'Nueva Colección'}
