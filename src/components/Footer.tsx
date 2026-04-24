@@ -45,7 +45,7 @@ export default function Footer() {
                             ].map(item => (
                                 <li key={item.href}>
                                     <Link href={item.href} className="text-white/50 hover:text-white transition text-sm flex items-center gap-1.5 group">
-                                        {item.label}
+                                        <span>{item.label}</span>
                                         <ArrowUpRight size={11} className="opacity-0 group-hover:opacity-100 transition" />
                                     </Link>
                                 </li>
@@ -67,7 +67,7 @@ export default function Footer() {
                             ].map(item => (
                                 <li key={item.href}>
                                     <Link href={item.href} className="text-white/50 hover:text-white transition text-sm flex items-center gap-1.5 group">
-                                        {item.label}
+                                        <span>{item.label}</span>
                                         <ArrowUpRight size={11} className="opacity-0 group-hover:opacity-100 transition" />
                                     </Link>
                                 </li>

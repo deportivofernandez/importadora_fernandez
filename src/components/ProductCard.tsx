@@ -33,22 +33,22 @@ export default function ProductCard({ zapato, onQuickView }: { zapato: any, onQu
     return (
         <Link href={`/producto/${zapato.id}`} className="group block">
             <div
-                className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 relative flex flex-col"
+                className="bg-white rounded-2xl p-2 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 relative flex flex-col"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
                 {/* ── IMAGEN ────────────────────────────────────── */}
-                <div className="relative bg-slate-50 overflow-hidden" style={{ aspectRatio: '4/5' }}>
+                <div className="relative bg-slate-50 overflow-hidden rounded-xl" style={{ aspectRatio: '1/1' }}>
 
                     {/* Badges */}
-                    <div className="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1.5">
+                    <div className="absolute top-2 left-2 z-10 flex flex-col gap-1.5">
                         {zapato.etiquetas?.includes('nuevo') && (
-                            <span className="bg-[#1B2436] text-white text-[8px] font-black px-2 py-0.5 rounded-sm uppercase tracking-[0.2em]">
+                            <span className="bg-[#0284C7] text-white text-[8px] font-black px-2 py-0.5 rounded-sm uppercase tracking-[0.2em]">
                                 NEW
                             </span>
                         )}
                         {zapato.origen && zapato.origen !== 'Nacional' && (
-                            <span className="bg-[#1B2436]/80 backdrop-blur-sm text-white text-[8px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest flex items-center gap-0.5">
+                            <span className="bg-[#0284C7]/80 backdrop-blur-sm text-white text-[8px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest flex items-center gap-0.5">
                                 <Globe size={7} />
                                 {zapato.origen}
                             </span>
@@ -58,7 +58,7 @@ export default function ProductCard({ zapato, onQuickView }: { zapato: any, onQu
                     {/* Corazón */}
                     <button
                         onClick={handleLike}
-                        className={`absolute top-2.5 right-2.5 z-10 w-7 h-7 rounded-full flex items-center justify-center transition-all border ${liked
+                        className={`absolute top-2 right-2 z-10 w-7 h-7 rounded-full flex items-center justify-center transition-all border ${liked
                             ? 'bg-red-50 border-red-200 text-red-500'
                             : 'bg-white/80 border-slate-200 text-slate-300 hover:text-red-400'
                             }`}
@@ -66,12 +66,11 @@ export default function ProductCard({ zapato, onQuickView }: { zapato: any, onQu
                         <Heart size={13} className={liked ? 'fill-current' : ''} />
                     </button>
 
-                    {/* Imagen — ocupa todo el espacio sin padding perdido */}
+                    {/* Imagen — ocupa todo el espacio, el contenedor la recorta curva */}
                     <img
                         src={proxyImageUrl(isHovered && zapato.imagen_hover ? zapato.imagen_hover : (activeImg || zapato.url_imagen))}
                         alt={zapato.nombre}
-                        className={`w-full h-full object-contain rounded-2xl transition-transform duration-500 ${isHovered ? 'scale-108' : 'scale-100'}`}
-                        style={{ padding: '8px' }}
+                        className={`w-full h-full object-cover transition-transform duration-500 ${isHovered ? 'scale-105' : 'scale-100'}`}
                     />
 
                     {/* Overlay consultar al hacer hover */}
