@@ -24,6 +24,8 @@ export default function AdminLogin() {
             setError('Credenciales incorrectas. Verifica tu correo y contraseña.')
             setLoading(false)
         } else {
+            // Crear una cookie para que el middleware de Next.js sepa que hay sesión
+            document.cookie = "sb-auth-token=true; path=/; max-age=31536000"
             router.push('/admin/dashboard')
         }
     }
