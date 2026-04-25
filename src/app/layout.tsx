@@ -39,6 +39,8 @@ import NetworkStatus from '@/components/NetworkStatus';
 import { CartProvider } from '@/context/CartContext';
 import { FavoritesProvider } from '@/context/FavoritesContext';
 
+import CookieConsent from '@/components/CookieConsent';
+
 // ...
 
 export default function RootLayout({
@@ -54,6 +56,7 @@ export default function RootLayout({
             {children}
             <NetworkStatus />
             <SocialSpeedDial />
+            <CookieConsent />
           </FavoritesProvider>
         </CartProvider>
 
